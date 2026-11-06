@@ -1,0 +1,10 @@
+{
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "setup-users": "node setup-users.mjs"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.57.0"
+  }
+}

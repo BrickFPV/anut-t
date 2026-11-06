@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="K.R.S. - Kişisel Raporlama Sistemi" />
+    <title>K.R.S. | Kişisel Raporlama Sistemi</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main id="app">
+      <section id="login-view" class="login-layout">
+        <div class="login-card">
+          <div class="brand-mark">K.R.S.</div>
+          <p class="eyebrow">TEKNOFEST A1 Roket Takımı</p>
+          <h1>Kişisel Raporlama Sistemi</h1>
+          <p class="muted">Takım içi gelişimi düzenli ve şeffaf şekilde takip edin.</p>
+
+          <form id="login-form" novalidate>
+            <label for="username">Kullanıcı adı</label>
+            <input id="username" name="username" autocomplete="username" required />
+            <label for="password">Şifre</label>
+            <input id="password" name="password" type="password" autocomplete="current-password" required />
+            <p id="login-error" class="form-error" role="alert"></p>
+            <button class="button button-primary button-wide" type="submit">Giriş yap</button>
+          </form>
+
+          <div class="demo-hint">
+            <strong>Güvenli giriş</strong>
+            <span>Hesap bilgilerinizi takım yöneticinizden alın.</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="dashboard-view" class="hidden">
+        <header class="topbar">
+          <div>
+            <div class="brand-mark small">K.R.S.</div>
+            <p class="eyebrow">TEKNOFEST A1 Roket Takımı</p>
+          </div>
+          <div class="user-actions">
+            <span id="current-user-label" class="user-label"></span>
+            <button id="logout-button" class="button button-ghost" type="button">Çıkış yap</button>
+          </div>
+        </header>
+
+        <div class="dashboard-content">
+          <div class="page-heading">
+            <div>
+              <p class="eyebrow">Kişisel rapor</p>
+              <h2 id="dashboard-title">Notlarım</h2>
+            </div>
+            <span id="role-badge" class="badge"></span>
+          </div>
+
+          <div id="admin-panel" class="hidden">
+            <div class="section-heading">
+              <div>
+                <h3>Takım notları</h3>
+                <p class="muted">Yalnızca adminler tüm takımın notlarını görebilir ve düzenleyebilir.</p>
+              </div>
+              <label class="select-label" for="member-select">Üye seçin
+                <select id="member-select"></select>
+              </label>
+            </div>
+            <div id="admin-notes-grid" class="notes-grid"></div>
+          </div>
+
+          <div id="member-panel">
+            <div class="section-heading">
+              <div>
+                <h3>Notlarım</h3>
+                <p class="muted">Bu notları yalnızca siz ve takım adminleri görebilir.</p>
+              </div>
+            </div>
+            <div id="member-notes-grid" class="notes-grid"></div>
+          </div>
+
+          <div id="save-status" class="status-message" role="status"></div>
+        </div>
+      </section>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

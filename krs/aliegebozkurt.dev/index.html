@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ali Ege Bozkurt | Hardware & Systems Developer</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            500: '#0284c7',
+                            600: '#0265d2',
+                            700: '#0369a1',
+                            900: '#0c4a6e',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'Fira Code', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts & FontAwesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .bg-grid-pattern {
+            background-size: 32px 32px;
+            background-image: 
+                linear-gradient(to right, rgba(148, 163, 184, 0.07) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(148, 163, 184, 0.07) 1px, transparent 1px);
+        }
+        .dark .bg-grid-pattern {
+            background-image: 
+                linear-gradient(to right, rgba(51, 65, 85, 0.15) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(51, 65, 85, 0.15) 1px, transparent 1px);
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+        .dark .glass-panel {
+            background: rgba(15, 23, 42, 0.75) !important;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+        .glow-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glow-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px -10px rgba(2, 132, 199, 0.15);
+        }
+        .dark .glow-card:hover {
+            box-shadow: 0 12px 30px -10px rgba(56, 189, 248, 0.12);
+        }
+        /* Custom Terminal Scrollbar */
+        .term-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .term-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .term-scroll::-webkit-scrollbar-thumb {
+            background: rgba(148, 163, 184, 0.3);
+            border-radius: 9999px;
+        }
+        .dark .term-scroll::-webkit-scrollbar-thumb {
+            background: rgba(51, 65, 85, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans antialiased min-h-screen flex flex-col transition-colors duration-300 bg-grid-pattern">
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-40 bg-white/70 dark:bg-slate-950/70 backdrop-blur-xl border-b border-slate-200/60 dark:border-slate-800/60 transition-colors">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <a href="#about" class="flex items-center space-x-2.5 group">
+          <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-brand-600 to-sky-400 text-white flex items-center justify-center font-bold text-sm shadow-md shadow-brand-500/20 group-hover:scale-105 transition-transform">
+            <i class="fa-solid fa-code text-xs"></i>
+          </div>
+          <span class="font-extrabold text-slate-900 dark:text-white text-lg tracking-tight">aliegebozkurt<span class="text-brand-500">.dev</span></span>
+        </a>
+        
+        <!-- Desktop Nav -->
+        <nav class="hidden md:flex items-center space-x-1 font-semibold text-xs uppercase tracking-wider text-slate-600 dark:text-slate-300">
+          <a href="#about" data-i18n="nav.about" class="px-3.5 py-2 rounded-xl hover:text-brand-600 dark:hover:text-brand-400 hover:bg-slate-100/80 dark:hover:bg-slate-800/80 transition-all">About</a>
+          <a href="#projects" data-i18n="nav.projects" class="px-3.5 py-2 rounded-xl hover:text-brand-600 dark:hover:text-brand-400 hover:bg-slate-100/80 dark:hover:bg-slate-800/80 transition-all">Projects</a>
+          <a href="#awards" data-i18n="nav.awards" class="px-3.5 py-2 rounded-xl hover:text-brand-600 dark:hover:text-brand-400 hover:bg-slate-100/80 dark:hover:bg-slate-800/80 transition-all">Awards</a>
+          <a href="#terminal" data-i18n="nav.terminal" class="px-3.5 py-2 rounded-xl hover:text-brand-600 dark:hover:text-brand-400 hover:bg-slate-100/80 dark:hover:bg-slate-800/80 transition-all">Terminal</a>
+          <a href="#contact" data-i18n="nav.contact" class="px-3.5 py-2 rounded-xl hover:text-brand-600 dark:hover:text-brand-400 hover:bg-slate-100/80 dark:hover:bg-slate-800/80 transition-all">Contact</a>
+        </nav>
+
+        <div class="flex items-center gap-2 sm:gap-3">
+            <!-- Theme Toggle Button -->
+            <button id="theme-toggle-btn" title="Toggle Theme" aria-label="Toggle Theme" class="p-2.5 rounded-xl bg-slate-100/80 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-brand-600 dark:hover:text-brand-400 transition-all">
+                <i id="theme-icon" class="fa-solid fa-moon"></i>
+            </button>
+
+            <!-- Language Switcher Toggle -->
+            <button id="lang-toggle-btn" title="Switch Language" aria-label="Switch Language" class="px-3 py-2 rounded-xl bg-slate-100/80 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-200 font-mono text-xs font-bold hover:text-brand-600 dark:hover:text-brand-400 transition-all flex items-center gap-1.5">
+                <i class="fa-solid fa-globe text-xs"></i>
+                <span id="lang-label">TR</span>
+            </button>
+
+            <div class="hidden lg:flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-3.5 py-1.5 rounded-full">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span class="font-mono text-[11px] font-bold text-emerald-700 dark:text-emerald-400">TaMesh #004c (868 MHz) Active</span>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-btn" aria-label="Toggle navigation menu" class="md:hidden p-2.5 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 focus:outline-none">
+              <i class="fa-solid fa-bars text-xl"></i>
+            </button>
+        </div>
+      </div>
+
+      <!-- Mobile Nav Dropdown -->
+      <div id="mobile-menu" class="hidden md:hidden bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 px-4 pt-3 pb-5 space-y-2 text-sm font-semibold">
+        <a href="#about" data-i18n="nav.about" class="block px-3.5 py-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800">About</a>
+        <a href="#projects" data-i18n="nav.projects" class="block px-3.5 py-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800">Projects</a>
+        <a href="#awards" data-i18n="nav.awards" class="block px-3.5 py-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800">Awards</a>
+        <a href="#terminal" data-i18n="nav.terminal" class="block px-3.5 py-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800">Terminal</a>
+        <a href="#contact" data-i18n="nav.contact" class="block px-3.5 py-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800">Contact</a>
+      </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-20">
+
+        <!-- HERO & ABOUT SECTION -->
+        <section id="about" class="pt-4 scroll-mt-24 space-y-8">
+            <div class="glass-panel rounded-3xl p-6 sm:p-12 shadow-xl shadow-slate-200/50 dark:shadow-none relative overflow-hidden border border-slate-200/80 dark:border-slate-800">
+                <div class="absolute -right-24 -top-24 w-96 h-96 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -left-24 -bottom-24 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+                    <div class="lg:col-span-8 space-y-6">
+                        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-50 dark:bg-brand-950/60 border border-brand-200/80 dark:border-brand-800 text-brand-700 dark:text-brand-300 text-xs font-mono font-semibold">
+                            <i class="fa-solid fa-microchip text-brand-500"></i> <span data-i18n="hero.role">Hardware & Systems Developer</span>
+                        </div>
+                        
+                        <h1 class="text-4xl sm:text-6xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-none">
+                            Ali Ege Bozkurt
+                        </h1>
+                        
+                        <p class="text-sm sm:text-base text-brand-600 dark:text-brand-400 font-mono font-semibold tracking-wide">
+                            Computer Vision • Meshtastic (868 MHz) • 1S Custom Tinywhoops • Debian Linux • Ender-3
+                        </p>
+                        
+                        <p data-i18n="hero.bio" class="text-slate-600 dark:text-slate-300 text-sm sm:text-base leading-relaxed max-w-2xl font-normal">
+                            High school student at Bahçeşehir Koleji 50. Yıl Fen ve Teknoloji Lisesi focused on building computer vision pan-and-tilt tracking platforms, 868 MHz Meshtastic radio communications (TaMesh Node ID: #004c), flying 1S custom tinywhoop quadcopters, self-hosted Debian/CasaOS servers, and Creality Ender-3 fabrication.
+                        </p>
+
+                        <div class="flex flex-wrap gap-3.5 pt-2">
+                            <a href="#projects" class="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-mono text-xs font-bold rounded-2xl transition-all shadow-md shadow-brand-600/20 hover:shadow-lg hover:shadow-brand-600/30 flex items-center gap-2.5">
+                                <i class="fa-solid fa-folder-open"></i> <span data-i18n="hero.explore_projects">Explore Projects</span>
+                            </a>
+                            <a href="#awards" class="px-6 py-3 bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 text-amber-800 dark:text-amber-300 font-mono text-xs font-bold rounded-2xl transition-all flex items-center gap-2.5">
+                                <i class="fa-solid fa-trophy text-amber-500"></i> <span data-i18n="hero.view_awards">View Awards</span>
+                            </a>
+                            <a href="#terminal" class="px-6 py-3 bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white font-mono text-xs font-bold rounded-2xl transition-all shadow-sm flex items-center gap-2.5">
+                                <i class="fa-solid fa-terminal text-brand-400"></i> <span data-i18n="hero.open_terminal">Open Terminal Lab</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Hero Quick Stats Badges -->
+                    <div class="lg:col-span-4 space-y-3.5">
+                        <div class="glass-panel p-4 rounded-2xl shadow-xs border border-slate-200/80 dark:border-slate-800 hover:border-brand-500/50 transition-all">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <div class="text-2xl font-black text-slate-900 dark:text-white font-mono tracking-tight">Node #004c</div>
+                                    <div class="text-xs font-mono font-semibold text-slate-500 dark:text-slate-400">TaMesh Mesh (868 MHz)</div>
+                                </div>
+                                <div class="w-11 h-11 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center border border-emerald-500/20">
+                                    <i class="fa-solid fa-tower-cell text-lg"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="glass-panel p-4 rounded-2xl shadow-xs border border-slate-200/80 dark:border-slate-800 hover:border-brand-500/50 transition-all">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <div class="text-2xl font-black text-slate-900 dark:text-white font-mono tracking-tight">TARS AI</div>
+                                    <div data-i18n="stats.tars_desc" class="text-xs font-mono font-semibold text-slate-500 dark:text-slate-400">Pan & Tilt Vision System</div>
+                                </div>
+                                <div class="w-11 h-11 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center border border-purple-500/20">
+                                    <i class="fa-solid fa-robot text-lg"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="glass-panel p-4 rounded-2xl shadow-xs border border-slate-200/80 dark:border-slate-800 hover:border-brand-500/50 transition-all">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <div class="text-2xl font-black text-slate-900 dark:text-white font-mono tracking-tight">1S Tinywhoop</div>
+                                    <div data-i18n="stats.tinywhoop_desc" class="text-xs font-mono font-semibold text-slate-500 dark:text-slate-400">Custom Micro Flight</div>
+                                </div>
+                                <div class="w-11 h-11 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center border border-amber-500/20">
+                                    <i class="fa-solid fa-plane-up text-lg"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROJECTS SECTION -->
+        <section id="projects" class="space-y-8 scroll-mt-24">
+            <div class="border-b border-slate-200/80 dark:border-slate-800 pb-5 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white flex items-center gap-3">
+                        <span class="text-brand-500 font-mono text-lg sm:text-xl">01.</span> <span data-i18n="projects.title">Featured Engineering Projects</span>
+                    </h2>
+                    <p data-i18n="projects.subtitle" class="text-slate-500 dark:text-slate-400 text-sm mt-1">Hardware builds, AI computer vision systems, radio mesh nodes, and self-hosted server infrastructure.</p>
+                </div>
+
+                <!-- Category Filters -->
+                <div class="flex flex-wrap gap-1.5 font-mono text-xs">
+                    <button data-filter="all" class="filter-btn active px-3.5 py-2 rounded-xl bg-brand-600 text-white font-bold transition">All</button>
+                    <button data-filter="hardware" class="filter-btn px-3.5 py-2 rounded-xl bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:text-brand-600 transition font-semibold">Hardware</button>
+                    <button data-filter="ai" class="filter-btn px-3.5 py-2 rounded-xl bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:text-brand-600 transition font-semibold">AI & Systems</button>
+                    <button data-filter="mesh" class="filter-btn px-3.5 py-2 rounded-xl bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:text-brand-600 transition font-semibold">Mesh / FPV</button>
+                </div>
+            </div>
+
+            <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Project 1: Meshtastic -->
+                <div class="project-card glow-card glass-panel rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between" data-category="mesh">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 text-[11px] font-mono font-bold border border-emerald-500/20">Meshtastic #004c</span>
+                            <span class="font-mono text-xs text-slate-400 dark:text-slate-500 font-bold">868 MHz</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white">Meshtastic Radio Node (TaMesh)</h3>
+                        <p data-i18n="projects.meshtastic_desc" class="text-slate-600 dark:text-slate-300 text-xs sm:text-sm leading-relaxed">Off-grid LoRa radio communication node operating on 868 MHz. Provides decentralized message routing and telemetry without cellular networks.</p>
+                    </div>
+                    <div class="pt-5 mt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
+                        <span class="font-mono text-xs text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-1.5"><i class="fa-solid fa-tower-cell"></i> Active Node</span>
+                        <button onclick="openModal('meshtastic-node')" data-i18n="projects.inspect" class="px-3.5 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-brand-600 hover:text-white dark:hover:bg-brand-600 text-slate-700 dark:text-slate-200 font-mono text-xs font-bold rounded-xl transition-all">Inspect</button>
+                    </div>
+                </div>
+
+                <!-- Project 2: TARS AI -->
+                <div class="project-card glow-card glass-panel rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between" data-category="ai">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="px-3 py-1 rounded-full bg-purple-500/10 text-purple-700 dark:text-purple-300 text-[11px] font-mono font-bold border border-purple-500/20">Robotics & Vision</span>
+                            <a href="https://github.com/BrickFPV/Tars-Ai-With-Pan-Tilt-Camera" target="_blank" class="text-slate-400 hover:text-slate-900 dark:hover:text-white text-base transition-colors"><i class="fa-brands fa-github"></i></a>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white">TARS AI Pan & Tilt Camera</h3>
+                        <p data-i18n="projects.tars_desc" class="text-slate-600 dark:text-slate-300 text-xs sm:text-sm leading-relaxed">Interstellar-inspired TARS platform featuring active pan and tilt camera tracking powered by gpt-oss 120B on a Raspberry Pi 4.</p>
+                    </div>
+                    <div class="pt-5 mt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
+                        <span class="font-mono text-xs text-purple-600 dark:text-purple-400 font-bold flex items-center gap-1.5"><i class="fa-solid fa-microchip"></i> gpt-oss 120B</span>
+                        <button onclick="openModal('tars-ai-pan-tilt')" data-i18n="projects.inspect" class="px-3.5 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-brand-600 hover:text-white dark:hover:bg-brand-600 text-slate-700 dark:text-slate-200 font-mono text-xs font-bold rounded-xl transition-all">Inspect</button>
+                    </div>
+                </div>
+
+                <!-- Project 3: 1S Custom Tinywhoops -->
+                <div class="project-card glow-card glass-panel rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between" data-category="mesh">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="px-3 py-1 rounded-full bg-amber-500/10 text-amber-700 dark:text-amber-300 text-[11px] font-mono font-bold border border-amber-500/20">FPV Drone</span>
+                            <span class="font-mono text-xs text-slate-400 dark:text-slate-500 font-bold">1S Battery</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white">1S Custom Tinywhoop Setup</h3>
+                        <p data-i18n="projects.tinywhoop_desc_card" class="text-slate-600 dark:text-slate-300 text-xs sm:text-sm leading-relaxed">Personal FPV flight gear and custom 1S micro quadcopters, powered by EMAX Transporter 2 goggles and VIFLY WhoopStor V3 charger.</p>
+                    </div>
+                    <div class="pt-5 mt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
+                        <span class="font-mono text-xs text-amber-600 dark:text-amber-400 font-bold flex items-center gap-1.5"><i class="fa-solid fa-plane-up"></i> Micro Flight</span>
+                        <button onclick="openModal('tinywhoop-1s')" data-i18n="projects.inspect" class="px-3.5 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-brand-600 hover:text-white dark:hover:bg-brand-600 text-slate-700 dark:text-slate-200 font-mono text-xs font-bold rounded-xl transition-all">Inspect</button>
+                    </div>
+                </div>
+
+                <!-- Project 4: Debian / CasaOS Server -->
+                <div class="project-card glow-card glass-panel rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between" data-category="hardware">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="px-3 py-1 rounded-full bg-sky-500/10 text-sky-700 dark:text-sky-300 text-[11px] font-mono font-bold border border-sky-500/20">Self-Hosted</span>
+                            <span class="font-mono text-xs text-slate-400 dark:text-slate-500 font-bold">Debian 12</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white">Debian / CasaOS Local Server</h3>
+                        <p data-i18n="projects.server_desc" class="text-slate-600 dark:text-slate-300 text-xs sm:text-sm leading-relaxed">Self-hosted homelab server running Debian Linux with CasaOS dashboard management and Docker containers for local infrastructure.</p>
+                    </div>
+                    <div class="pt-5 mt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
+                        <span class="font-mono text-xs text-sky-600 dark:text-sky-400 font-bold flex items-center gap-1.5"><i class="fa-solid fa-server"></i> Docker Stack</span>
+                        <button onclick="openModal('home-server')" data-i18n="projects.inspect" class="px-3.5 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-brand-600 hover:text-white dark:hover:bg-brand-600 text-slate-700 dark:text-slate-200 font-mono text-xs font-bold rounded-xl transition-all">Inspect</button>
+                    </div>
+                </div>
+
+                <!-- Project 5: Hermes AI Agent Tools -->
+                <div class="project-card glow-card glass-panel rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between" data-category="ai">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 text-[11px] font-mono font-bold border border-indigo-500/20">AI Tooling</span>
+                            <span class="font-mono text-xs text-slate-400 dark:text-slate-500 font-bold">Hermes Agent</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white">Hermes AI Agent Local Tools</h3>
+                        <p data-i18n="projects.hermes_desc" class="text-slate-600 dark:text-slate-300 text-xs sm:text-sm leading-relaxed">Custom tools built for the Hermes AI Agent platform, including Edupage school connections and network printer control.</p>
+                    </div>
+                    <div class="pt-5 mt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
+                        <span class="font-mono text-xs text-indigo-600 dark:text-indigo-400 font-bold flex items-center gap-1.5"><i class="fa-solid fa-screwdriver-wrench"></i> Edupage & Print</span>
+                        <button onclick="openModal('hermes-ai')" data-i18n="projects.inspect" class="px-3.5 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-brand-600 hover:text-white dark:hover:bg-brand-600 text-slate-700 dark:text-slate-200 font-mono text-xs font-bold rounded-xl transition-all">Inspect</button>
+                    </div>
+                </div>
+
+                <!-- Project 6: Ender-3 Printing -->
+                <div class="project-card glow-card glass-panel rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between" data-category="hardware">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="px-3 py-1 rounded-full bg-rose-500/10 text-rose-700 dark:text-rose-300 text-[11px] font-mono font-bold border border-rose-500/20">3D Fabrication</span>
+                            <span class="font-mono text-xs text-slate-400 dark:text-slate-500 font-bold">Ender-3</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white">Ender-3 Hardware Lab</h3>
+                        <p data-i18n="projects.ender_desc" class="text-slate-600 dark:text-slate-300 text-xs sm:text-sm leading-relaxed">Creality Ender-3 setup tuned for fabricating custom electronics cases, drone mounts, and robotic mechanical parts.</p>
+                    </div>
+                    <div class="pt-5 mt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
+                        <span class="font-mono text-xs text-rose-600 dark:text-rose-400 font-bold flex items-center gap-1.5"><i class="fa-solid fa-cube"></i> Enclosures</span>
+                        <button onclick="openModal('ender3-printing')" data-i18n="projects.inspect" class="px-3.5 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-brand-600 hover:text-white dark:hover:bg-brand-600 text-slate-700 dark:text-slate-200 font-mono text-xs font-bold rounded-xl transition-all">Inspect</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AWARDS SECTION -->
+        <section id="awards" class="space-y-8 scroll-mt-24">
+            <div class="border-b border-slate-200/80 dark:border-slate-800 pb-5">
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white flex items-center gap-3">
+                    <span class="text-brand-500 font-mono text-lg sm:text-xl">02.</span> <span data-i18n="awards.title">Awards & Achievements</span>
+                </h2>
+                <p data-i18n="awards.subtitle" class="text-slate-500 dark:text-slate-400 text-sm mt-1">Recognitions in national robotics competitions, innovation projects, and software challenges.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Award 1 -->
+                <div class="glow-card glass-panel rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between">
+                    <div class="space-y-3.5">
+                        <div class="flex items-center justify-between">
+                            <span class="px-3 py-1 rounded-full bg-amber-500/10 text-amber-800 dark:text-amber-300 text-[11px] font-mono font-bold border border-amber-500/20 flex items-center gap-1.5">
+                                <i class="fa-solid fa-trophy text-amber-500"></i> <span data-i18n="awards.place_1">1st Place</span>
+                            </span>
+                            <span class="font-mono text-xs text-slate-400 dark:text-slate-500 font-bold">2025</span>
+                        </div>
+                        <h3 data-i18n="awards.award1_title" class="text-base font-bold text-slate-900 dark:text-white leading-snug">Innovative Project Award</h3>
+                        <p class="text-slate-600 dark:text-slate-300 text-xs sm:text-sm font-medium">FLL Challenge Submerged 2025</p>
+                    </div>
+                    <div class="pt-4 mt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between font-mono text-[11px] text-slate-500 dark:text-slate-400">
+                        <span>FIRST LEGO League</span>
+                        <span data-i18n="awards.national" class="text-amber-600 dark:text-amber-400 font-bold">National</span>
+                    </div>
+                </div>
+
+                <!-- Award 2 -->
+                <div class="glow-card glass-panel rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between">
+                    <div class="space-y-3.5">
+                        <div class="flex items-center justify-between">
+                            <span class="px-3 py-1 rounded-full bg-amber-500/10 text-amber-800 dark:text-amber-300 text-[11px] font-mono font-bold border border-amber-500/20 flex items-center gap-1.5">
+                                <i class="fa-solid fa-trophy text-amber-500"></i> <span data-i18n="awards.place_1">1st Place</span>
+                            </span>
+                            <span class="font-mono text-xs text-slate-400 dark:text-slate-500 font-bold">2024</span>
+                        </div>
+                        <h3 data-i18n="awards.award2_title" class="text-base font-bold text-slate-900 dark:text-white leading-snug">Innovative Project Award</h3>
+                        <p class="text-slate-600 dark:text-slate-300 text-xs sm:text-sm font-medium">FLL Challenge Masterpiece 2024</p>
+                    </div>
+                    <div class="pt-4 mt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between font-mono text-[11px] text-slate-500 dark:text-slate-400">
+                        <span>FIRST LEGO League</span>
+                        <span data-i18n="awards.national" class="text-amber-600 dark:text-amber-400 font-bold">National</span>
+                    </div>
+                </div>
+
+                <!-- Award 3 -->
+                <div class="glow-card glass-panel rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between">
+                    <div class="space-y-3.5">
+                        <div class="flex items-center justify-between">
+                            <span class="px-3 py-1 rounded-full bg-amber-500/10 text-amber-800 dark:text-amber-300 text-[11px] font-mono font-bold border border-amber-500/20 flex items-center gap-1.5">
+                                <i class="fa-solid fa-trophy text-amber-500"></i> <span data-i18n="awards.place_1">1st Place</span>
+                            </span>
+                            <span class="font-mono text-xs text-slate-400 dark:text-slate-500 font-bold">2022</span>
+                        </div>
+                        <h3 data-i18n="awards.award3_title" class="text-base font-bold text-slate-900 dark:text-white leading-snug">2nd National Coding Competition</h3>
+                        <p data-i18n="awards.award3_desc" class="text-slate-600 dark:text-slate-300 text-xs sm:text-sm font-medium">Selçuklu Primary School National Coding Competition</p>
+                    </div>
+                    <div class="pt-4 mt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between font-mono text-[11px] text-slate-500 dark:text-slate-400">
+                        <span data-i18n="awards.primary_coding">Primary Schools Coding</span>
+                        <span data-i18n="awards.national" class="text-amber-600 dark:text-amber-400 font-bold">National</span>
+                    </div>
+                </div>
+
+                <!-- Award 4 -->
+                <div class="glow-card glass-panel rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between">
+                    <div class="space-y-3.5">
+                        <div class="flex items-center justify-between">
+                            <span class="px-3 py-1 rounded-full bg-amber-500/10 text-amber-800 dark:text-amber-300 text-[11px] font-mono font-bold border border-amber-500/20 flex items-center gap-1.5">
+                                <i class="fa-solid fa-trophy text-amber-500"></i> <span data-i18n="awards.place_1">1st Place</span>
+                            </span>
+                            <span class="font-mono text-xs text-slate-400 dark:text-slate-500 font-bold">2021</span>
+                        </div>
+                        <h3 data-i18n="awards.award4_title" class="text-base font-bold text-slate-900 dark:text-white leading-snug">VEX Robotics Competition</h3>
+                        <p data-i18n="awards.award4_desc" class="text-slate-600 dark:text-slate-300 text-xs sm:text-sm font-medium">National Level Championship</p>
+                    </div>
+                    <div class="pt-4 mt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between font-mono text-[11px] text-slate-500 dark:text-slate-400">
+                        <span>VEX Robotics</span>
+                        <span data-i18n="awards.national_level" class="text-amber-600 dark:text-amber-400 font-bold">National Level</span>
+                    </div>
+                </div>
+
+                <!-- Award 5 -->
+                <div class="glow-card glass-panel rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between">
+                    <div class="space-y-3.5">
+                        <div class="flex items-center justify-between">
+                            <span class="px-3 py-1 rounded-full bg-slate-500/10 text-slate-800 dark:text-slate-200 text-[11px] font-mono font-bold border border-slate-500/20 flex items-center gap-1.5">
+                                <i class="fa-solid fa-award text-slate-500 dark:text-slate-400"></i> <span data-i18n="awards.place_2">2nd Place</span>
+                            </span>
+                            <span class="font-mono text-xs text-slate-400 dark:text-slate-500 font-bold">2021</span>
+                        </div>
+                        <h3 data-i18n="awards.award5_title" class="text-base font-bold text-slate-900 dark:text-white leading-snug">1st National Coding Competition</h3>
+                        <p data-i18n="awards.award5_desc" class="text-slate-600 dark:text-slate-300 text-xs sm:text-sm font-medium">Selçuklu Primary School National Coding Competition</p>
+                    </div>
+                    <div class="pt-4 mt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between font-mono text-[11px] text-slate-500 dark:text-slate-400">
+                        <span data-i18n="awards.primary_coding">Primary Schools Coding</span>
+                        <span data-i18n="awards.national" class="text-slate-600 dark:text-slate-400 font-bold">National</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- INTERACTIVE LIGHT TERMINAL / LAB WIDGET -->
+        <section id="terminal" class="space-y-6 scroll-mt-24">
+            <div class="border-b border-slate-200/80 dark:border-slate-800 pb-5">
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white flex items-center gap-3">
+                    <span class="text-brand-500 font-mono text-lg sm:text-xl">03.</span> <span data-i18n="terminal.title">CLI Terminal Lab</span>
+                </h2>
+                <p data-i18n="terminal.subtitle" class="text-slate-500 dark:text-slate-400 text-sm mt-1">Interactive shell environment. Type commands or click quick action triggers below.</p>
+            </div>
+
+            <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200/80 dark:border-slate-800 overflow-hidden font-mono text-xs transition-colors">
+                <!-- Terminal Bar Header -->
+                <div class="bg-slate-100/80 dark:bg-slate-950 px-5 py-3 border-b border-slate-200/80 dark:border-slate-800 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-rose-500 inline-block"></span>
+                        <span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span>
+                        <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span>
+                        <span class="ml-2 text-slate-600 dark:text-slate-400 font-bold text-[11px]">ege@aliegebozkurt.dev:~ (bash)</span>
+                    </div>
+                    <div class="text-slate-400 dark:text-slate-500 text-[10px] font-semibold">v3.4.0-mesh</div>
+                </div>
+
+                <!-- Terminal Output Panel -->
+                <div id="terminal-output" class="p-5 sm:p-6 h-72 overflow-y-auto term-scroll bg-slate-50/50 dark:bg-slate-950/60 space-y-2 text-slate-800 dark:text-slate-200">
+                    <div class="text-slate-400 dark:text-slate-500" data-i18n="terminal.welcome">Welcome to Ali Ege Bozkurt's interactive CLI shell.</div>
+                    <div class="text-slate-400 dark:text-slate-500"><span data-i18n="terminal.prompt_help">Type</span> <span class="text-brand-600 dark:text-brand-400 font-bold">help</span> <span data-i18n="terminal.prompt_actions">or click action buttons below.</span></div>
+                    <div class="text-slate-300 dark:text-slate-800">---------------------------------------------------</div>
+                </div>
+
+                <!-- Quick Command Suggestion Buttons -->
+                <div class="bg-slate-100/50 dark:bg-slate-900/90 border-t border-slate-200/80 dark:border-slate-800 px-5 py-2.5 flex flex-wrap gap-2 items-center">
+                    <span data-i18n="terminal.quick_commands" class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Quick Commands:</span>
+                    <button onclick="runQuickCmd('help')" class="px-2.5 py-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-brand-400 text-slate-700 dark:text-slate-200 hover:text-brand-600 dark:hover:text-brand-400 rounded-lg text-[11px] font-semibold transition-all shadow-2xs">help</button>
+                    <button onclick="runQuickCmd('neofetch')" class="px-2.5 py-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-brand-400 text-slate-700 dark:text-slate-200 hover:text-brand-600 dark:hover:text-brand-400 rounded-lg text-[11px] font-semibold transition-all shadow-2xs">neofetch</button>
+                    <button onclick="runQuickCmd('meshtastic')" class="px-2.5 py-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-emerald-400 text-slate-700 dark:text-slate-200 hover:text-emerald-600 dark:hover:text-emerald-400 rounded-lg text-[11px] font-bold transition-all shadow-2xs">meshtastic</button>
+                    <button onclick="runQuickCmd('projects')" class="px-2.5 py-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-brand-400 text-slate-700 dark:text-slate-200 hover:text-brand-600 dark:hover:text-brand-400 rounded-lg text-[11px] font-semibold transition-all shadow-2xs">projects</button>
+                    <button onclick="runQuickCmd('clear')" class="px-2.5 py-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-rose-400 text-slate-700 dark:text-slate-200 hover:text-rose-600 dark:hover:text-rose-400 rounded-lg text-[11px] font-semibold transition-all shadow-2xs">clear</button>
+                </div>
+
+                <!-- Input Prompt Form -->
+                <form id="terminal-form" class="bg-white dark:bg-slate-900 px-5 py-3 border-t border-slate-200/80 dark:border-slate-800 flex items-center gap-2">
+                    <span class="text-emerald-600 dark:text-emerald-400 font-bold">ege@aliegebozkurt.dev:~$</span>
+                    <input type="text" id="terminal-input" autocomplete="off" placeholder="Type a command (e.g., 'meshtastic', 'neofetch')..." class="flex-grow bg-transparent outline-none text-slate-900 dark:text-white font-mono text-xs">
+                    <button type="submit" data-i18n="terminal.execute" class="px-3.5 py-1.5 bg-brand-600 hover:bg-brand-700 text-white rounded-lg font-bold text-[11px] transition-colors shadow-2xs">
+                        Execute
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- CONTACT & DIRECT LINKS -->
+        <section id="contact" class="space-y-8 scroll-mt-24">
+            <div class="border-b border-slate-200/80 dark:border-slate-800 pb-5">
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white flex items-center gap-3">
+                    <span class="text-brand-500 font-mono text-lg sm:text-xl">04.</span> <span data-i18n="contact.title">Contact & Direct Links</span>
+                </h2>
+                <p data-i18n="contact.subtitle" class="text-slate-500 dark:text-slate-400 text-sm mt-1">Direct contact points for engineering projects, robotics, and agent integrations.</p>
+            </div>
+
+            <div class="glass-panel border border-slate-200/80 dark:border-slate-800 rounded-3xl p-6 sm:p-10 grid grid-cols-1 md:grid-cols-2 gap-10 shadow-xl shadow-slate-200/40 dark:shadow-none">
+                <div class="space-y-6">
+                    <div>
+                        <h3 data-i18n="contact.get_in_touch" class="text-xl font-extrabold text-slate-900 dark:text-white mb-2">Get In Touch</h3>
+                        <p data-i18n="contact.desc" class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
+                            Reach out regarding computer vision robotics, home servers, or AI agent integrations.
+                        </p>
+                    </div>
+
+                    <div class="space-y-3 font-mono text-xs sm:text-sm">
+                        <!-- Personal Email -->
+                        <div class="space-y-1.5">
+                            <span data-i18n="contact.personal_email" class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Direct Personal Email</span>
+                            <div class="flex items-center justify-between text-slate-800 dark:text-slate-100 bg-white/80 dark:bg-slate-900/80 p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+                                <div class="flex items-center gap-2.5 overflow-hidden">
+                                    <i class="fa-solid fa-envelope text-brand-500 flex-shrink-0"></i>
+                                    <span id="email-text-personal" class="font-bold truncate">aliegebozkurt12@gmail.com</span>
+                                </div>
+                                <button onclick="copyEmailText('aliegebozkurt12@gmail.com', 'copy-btn-personal')" id="copy-btn-personal" class="ml-2 px-3 py-1.5 text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-brand-500 hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-all flex-shrink-0 font-bold">
+                                    <i class="fa-regular fa-copy"></i> <span data-i18n="contact.copy">Copy</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- AI Agent Email -->
+                        <div class="space-y-1.5">
+                            <span data-i18n="contact.agent_email" class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">AI Agent Gateway Email</span>
+                            <div class="flex items-center justify-between text-slate-800 dark:text-slate-100 bg-white/80 dark:bg-slate-900/80 p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+                                <div class="flex items-center gap-2.5 overflow-hidden">
+                                    <i class="fa-solid fa-robot text-purple-600 dark:text-purple-400 flex-shrink-0"></i>
+                                    <span id="email-text-agent" class="font-bold truncate">ai.aliegebozkurt@gmail.com</span>
+                                </div>
+                                <button onclick="copyEmailText('ai.aliegebozkurt@gmail.com', 'copy-btn-agent')" id="copy-btn-agent" class="ml-2 px-3 py-1.5 text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-brand-500 hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-all flex-shrink-0 font-bold">
+                                    <i class="fa-regular fa-copy"></i> <span data-i18n="contact.copy">Copy</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-3 pt-2">
+                        <a href="https://github.com/BrickFPV" target="_blank" class="px-5 py-2.5 bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white font-mono text-xs font-semibold rounded-2xl transition-all flex items-center gap-2 shadow-sm">
+                            <i class="fa-brands fa-github text-sm"></i> GitHub (@BrickFPV)
+                        </a>
+                        <a href="mailto:aliegebozkurt12@gmail.com" class="px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-mono text-xs font-semibold rounded-2xl transition-all flex items-center gap-2 shadow-md shadow-brand-600/20">
+                            <i class="fa-solid fa-paper-plane text-xs"></i> <span data-i18n="contact.send_mail">Send Mail</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Contact Form -->
+                <form id="contact-form" class="space-y-4 bg-white/90 dark:bg-slate-900/90 p-6 sm:p-8 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm">
+                    <div>
+                        <label data-i18n="contact.form_name" class="block font-mono text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">YOUR NAME</label>
+                        <input type="text" required class="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs sm:text-sm text-slate-900 dark:text-white outline-none focus:bg-white dark:focus:bg-slate-800 focus:border-brand-500 transition-all font-mono" placeholder="Name">
+                    </div>
+                    <div>
+                        <label data-i18n="contact.form_email" class="block font-mono text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">EMAIL ADDRESS</label>
+                        <input type="email" required class="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs sm:text-sm text-slate-900 dark:text-white outline-none focus:bg-white dark:focus:bg-slate-800 focus:border-brand-500 transition-all font-mono" placeholder="name@domain.com">
+                    </div>
+                    <div>
+                        <label data-i18n="contact.form_message" class="block font-mono text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">MESSAGE / INQUIRY</label>
+                        <textarea rows="4" required class="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs sm:text-sm text-slate-900 dark:text-white outline-none focus:bg-white dark:focus:bg-slate-800 focus:border-brand-500 transition-all resize-none font-mono" placeholder="Project message or inquiry..."></textarea>
+                    </div>
+                    <button type="submit" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-mono text-xs font-bold rounded-xl transition-all shadow-md shadow-brand-600/20 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-paper-plane text-xs"></i> <span data-i18n="contact.form_submit">Send Message</span>
+                    </button>
+                    <p id="form-response" data-i18n="contact.form_success" class="text-xs font-mono text-center text-emerald-600 dark:text-emerald-400 hidden font-semibold">✓ Message delivered successfully.</p>
+                </form>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-200/80 dark:border-slate-800 py-10 text-center font-mono text-xs text-slate-500 dark:text-slate-400 bg-white/50 dark:bg-slate-950/50 backdrop-blur-md mt-20 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 space-y-2">
+            <p data-i18n="footer.rights" class="font-bold text-slate-700 dark:text-slate-300">&copy; 2026 Ali Ege Bozkurt. All rights reserved.</p>
+            <p class="text-slate-500 dark:text-slate-400">
+                Email: <a href="mailto:aliegebozkurt12@gmail.com" class="hover:text-brand-600 underline font-semibold">aliegebozkurt12@gmail.com</a> | 
+                TaMesh: <span class="text-emerald-600 dark:text-emerald-400 font-bold">Node #004c (868 MHz)</span>
+            </p>
+            <p class="text-brand-600 dark:text-brand-400 font-bold">aliegebozkurt.dev</p>
+        </div>
+    </footer>
+
+    <!-- PROJECT MODAL POPUP -->
+    <div id="project-modal" class="fixed inset-0 z-50 hidden bg-slate-950/60 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="glass-panel bg-white dark:bg-slate-900 max-w-lg w-full rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 p-7 space-y-5 relative">
+            <button onclick="closeModal()" class="absolute top-5 right-5 p-2 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 rounded-xl text-sm transition-colors">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div id="modal-content" class="space-y-4">
+                <!-- Modal details dynamically loaded via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Internationalization (i18n) Translations
+        const translations = {
+            en: {
+                "nav.about": "About",
+                "nav.projects": "Projects",
+                "nav.awards": "Awards",
+                "nav.terminal": "Terminal",
+                "nav.contact": "Contact",
+                "hero.role": "Hardware & Systems Developer",
+                "hero.bio": "High school student at Bahçeşehir Koleji 50. Yıl Fen ve Teknoloji Lisesi focused on building computer vision pan-and-tilt tracking platforms, 868 MHz Meshtastic radio communications (TaMesh Node ID: #004c), flying 1S custom tinywhoop quadcopters, self-hosted Debian/CasaOS servers, and Creality Ender-3 fabrication.",
+                "hero.explore_projects": "Explore Projects",
+                "hero.view_awards": "View Awards",
+                "hero.open_terminal": "Open Terminal Lab",
+                "stats.tars_desc": "Pan & Tilt Vision System",
+                "stats.tinywhoop_desc": "Custom Micro Flight",
+                "projects.title": "Featured Engineering Projects",
+                "projects.subtitle": "Hardware builds, AI computer vision systems, radio mesh nodes, and self-hosted server infrastructure.",
+                "projects.meshtastic_desc": "Off-grid LoRa radio communication node operating on 868 MHz. Provides decentralized message routing and telemetry without cellular networks.",
+                "projects.tars_desc": "Interstellar-inspired TARS platform featuring active pan and tilt camera tracking powered by gpt-oss 120B on a Raspberry Pi 4.",
+                "projects.tinywhoop_desc_card": "Personal FPV flight gear and custom 1S micro quadcopters, powered by EMAX Transporter 2 goggles and VIFLY WhoopStor V3 charger.",
+                "projects.server_desc": "Self-hosted homelab server running Debian Linux with CasaOS dashboard management and Docker containers for local infrastructure.",
+                "projects.hermes_desc": "Custom tools built for the Hermes AI Agent platform, including Edupage school connections and network printer control.",
+                "projects.ender_desc": "Creality Ender-3 setup tuned for fabricating custom electronics cases, drone mounts, and robotic mechanical parts.",
+                "projects.inspect": "Inspect",
+                "awards.title": "Awards & Achievements",
+                "awards.subtitle": "Recognitions in national robotics competitions, innovation projects, and software challenges.",
+                "awards.place_1": "1st Place",
+                "awards.place_2": "2nd Place",
+                "awards.national": "National",
+                "awards.national_level": "National Level",
+                "awards.primary_coding": "Primary Schools Coding",
+                "awards.award1_title": "Innovative Project Award",
+                "awards.award2_title": "Innovative Project Award",
+                "awards.award3_title": "2nd National Coding Competition",
+                "awards.award3_desc": "Selçuklu Primary School National Coding Competition",
+                "awards.award4_title": "VEX Robotics Competition",
+                "awards.award4_desc": "National Level Championship",
+                "awards.award5_title": "1st National Coding Competition",
+                "awards.award5_desc": "Selçuklu Primary School National Coding Competition",
+                "terminal.title": "CLI Terminal Lab",
+                "terminal.subtitle": "Interactive shell environment. Type commands or click quick action triggers below.",
+                "terminal.welcome": "Welcome to Ali Ege Bozkurt's interactive CLI shell.",
+                "terminal.prompt_help": "Type",
+                "terminal.prompt_actions": "or click action buttons below.",
+                "terminal.quick_commands": "Quick Commands:",
+                "terminal.execute": "Execute",
+                "contact.title": "Contact & Direct Links",
+                "contact.subtitle": "Direct contact points for engineering projects, robotics, and agent integrations.",
+                "contact.get_in_touch": "Get In Touch",
+                "contact.desc": "Reach out regarding computer vision robotics, home servers, or AI agent integrations.",
+                "contact.personal_email": "Direct Personal Email",
+                "contact.agent_email": "AI Agent Gateway Email",
+                "contact.copy": "Copy",
+                "contact.send_mail": "Send Mail",
+                "contact.form_name": "YOUR NAME",
+                "contact.form_email": "EMAIL ADDRESS",
+                "contact.form_message": "MESSAGE / INQUIRY",
+                "contact.form_submit": "Send Message",
+                "contact.form_success": "✓ Message delivered successfully.",
+                "footer.rights": "© 2026 Ali Ege Bozkurt. All rights reserved."
+            },
+            tr: {
+                "nav.about": "Hakkımda",
+                "nav.projects": "Projeler",
+                "nav.awards": "Ödüller",
+                "nav.terminal": "Terminal",
+                "nav.contact": "İletişim",
+                "hero.role": "Donanım & Sistem Geliştirici",
+                "hero.bio": "Bahçeşehir Koleji 50. Yıl Fen ve Teknoloji Lisesi'nde lise öğrencisi olan Ali Ege Bozkurt; bilgisayarlı görü hareketli kamera sistemleri, 868 MHz Meshtastic telsiz iletişimi (TaMesh Düğüm ID: #004c), özel yapım 1S tinywhoop mikro dronlar, Debian/CasaOS sunucuları ve Creality Ender-3 üretimi üzerine çalışmaktadır.",
+                "hero.explore_projects": "Projeleri İncele",
+                "hero.view_awards": "Ödülleri Gör",
+                "hero.open_terminal": "Terminal Laboratuvarı",
+                "stats.tars_desc": "Pan & Tilt Görü Sistemi",
+                "stats.tinywhoop_desc": "Özel Mikro Uçuş",
+                "projects.title": "Öne Çıkan Mühendislik Projeleri",
+                "projects.subtitle": "Donanım tasarımları, yapay zeka görü sistemleri, telsiz mesh düğümleri ve kişisel sunucu altyapısı.",
+                "projects.meshtastic_desc": "868 MHz frekansında çalışan şebekeden bağımsız LoRa telsiz düğümü. Hücresel ağ olmadan mesajlaşma ve telemetri aktarımı sağlar.",
+                "projects.tars_desc": "Raspberry Pi 4 üzerinde gpt-oss 120B ile çalışan Interstellar esintili pan-tilt kamera takip sistemi.",
+                "projects.tinywhoop_desc_card": "EMAX Transporter 2 gözlükleri ve VIFLY WhoopStor V3 şarj cihazı ile desteklenen özel 1S mikro quadcopter uçuş seti.",
+                "projects.server_desc": "Debian Linux, CasaOS yönetim paneli ve Docker konteyner altyapısına sahip yerel sunucu.",
+                "projects.hermes_desc": "Hermes Yapay Zeka Aracı için geliştirilmiş Edupage okul bağlantısı ve ağ yazıcısı kontrol araçları.",
+                "projects.ender_desc": "Özel elektronik kutuları, dron aparatları ve robot parçaları basmak için kalibre edilmiş Creality Ender-3 3D yazıcı.",
+                "projects.inspect": "İncele",
+                "awards.title": "Ödüller & Başarılar",
+                "awards.subtitle": "Ulusal robotik yarışmaları, yenilikçi projeler ve yazılım yarışmalarındaki dereceler.",
+                "awards.place_1": "1.lik Ödülü",
+                "awards.place_2": "2.lik Ödülü",
+                "awards.national": "Ulusal",
+                "awards.national_level": "Ulusal Seviye",
+                "awards.primary_coding": "İlkokullar Kodlama",
+                "awards.award1_title": "Yenilikçi Proje Ödülü",
+                "awards.award2_title": "Yenilikçi Proje Ödülü",
+                "awards.award3_title": "2. Ulusal Kodlama Yarışması",
+                "awards.award3_desc": "Selçuklu İlkokulu Ulusal Kodlama Yarışması",
+                "awards.award4_title": "VEX Robotik Yarışması",
+                "awards.award4_desc": "Ulusal Seviye Şampiyonası",
+                "awards.award5_title": "1. Ulusal Kodlama Yarışması",
+                "awards.award5_desc": "Selçuklu İlkokulu Ulusal Kodlama Yarışması",
+                "terminal.title": "CLI Terminal Laboratuvarı",
+                "terminal.subtitle": "Etkileşimli kabuk ortamı. Komut yazın veya hızlı işlem düğmelerine tıklayın.",
+                "terminal.welcome": "Ali Ege Bozkurt'un etkileşimli CLI kabuğuna hoş geldiniz.",
+                "terminal.prompt_help": "Komutları görmek için",
+                "terminal.prompt_actions": "yazın veya butonları kullanın.",
+                "terminal.quick_commands": "Hızlı Komutlar:",
+                "terminal.execute": "Çalıştır",
+                "contact.title": "İletişim & Doğrudan Bağlantılar",
+                "contact.subtitle": "Robotik projeleri, sunucular ve yapay zeka entegrasyonları için doğrudan iletişim.",
+                "contact.get_in_touch": "İletişime Geçin",
+                "contact.desc": "Görü robotik sistemleri, sunucular veya yapay zeka aracı entegrasyonları için yazabilirsiniz.",
+                "contact.personal_email": "Kişisel E-Posta Adresi",
+                "contact.agent_email": "AI Agent Ağ Geçidi E-Postası",
+                "contact.copy": "Kopyala",
+                "contact.send_mail": "E-Posta Gönder",
+                "contact.form_name": "ADINIZ SOYADINIZ",
+                "contact.form_email": "E-POSTA ADRESİNİZ",
+                "contact.form_message": "MESAJINIZ / SORUNUZ",
+                "contact.form_submit": "Mesajı Gönder",
+                "contact.form_success": "✓ Mesajınız başarıyla iletildi.",
+                "footer.rights": "© 2026 Ali Ege Bozkurt. Tüm hakları saklıdır."
+            }
+        };
+
+        let currentLang = 'en';
+
+        function updateLanguage(lang) {
+            currentLang = lang;
+            document.querySelectorAll('[data-i18n]').forEach(elem => {
+                const key = elem.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    elem.textContent = translations[lang][key];
+                }
+            });
+            document.getElementById('lang-label').textContent = lang === 'en' ? 'TR' : 'EN';
+        }
+
+        document.getElementById('lang-toggle-btn').addEventListener('click', () => {
+            const nextLang = currentLang === 'en' ? 'tr' : 'en';
+            updateLanguage(nextLang);
+        });
+
+        // Theme Toggle Logic
+        const themeBtn = document.getElementById('theme-toggle-btn');
+        const themeIcon = document.getElementById('theme-icon');
+
+        function setTheme(isDark) {
+            if (isDark) {
+                document.documentElement.classList.add('dark');
+                themeIcon.className = 'fa-solid fa-sun text-amber-400';
+            } else {
+                document.documentElement.classList.remove('dark');
+                themeIcon.className = 'fa-solid fa-moon';
+            }
+        }
+
+        themeBtn.addEventListener('click', () => {
+            const isDark = document.documentElement.classList.toggle('dark');
+            themeIcon.className = isDark ? 'fa-solid fa-sun text-amber-400' : 'fa-solid fa-moon';
+        });
+
+        // Mobile Navigation Toggle
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileBtn && mobileMenu) {
+            mobileBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+            document.querySelectorAll('#mobile-menu a').forEach(link => {
+                link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+            });
+        }
+
+        // Copy Email Function
+        function copyEmailText(emailText, btnId) {
+            const copyBtn = document.getElementById(btnId);
+            const tempInput = document.createElement('input');
+            tempInput.value = emailText;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+
+            const originalHTML = copyBtn.innerHTML;
+            copyBtn.innerHTML = `<i class="fa-solid fa-check text-emerald-600"></i> Copied`;
+            setTimeout(() => {
+                copyBtn.innerHTML = originalHTML;
+            }, 2500);
+        }
+
+        // Contact Form Mock Submit
+        const contactForm = document.getElementById('contact-form');
+        const formResponse = document.getElementById('form-response');
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            formResponse.classList.remove('hidden');
+            contactForm.reset();
+            setTimeout(() => formResponse.classList.add('hidden'), 4000);
+        });
+
+        // Category Filter Logic
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const projectCards = document.querySelectorAll('.project-card');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => {
+                    b.classList.remove('active', 'bg-brand-600', 'text-white');
+                    b.classList.add('bg-white', 'text-slate-600', 'border', 'border-slate-200');
+                });
+                btn.classList.add('active', 'bg-brand-600', 'text-white');
+                btn.classList.remove('bg-white', 'text-slate-600', 'border', 'border-slate-200');
+
+                const filter = btn.getAttribute('data-filter');
+                projectCards.forEach(card => {
+                    if (filter === 'all' || card.getAttribute('data-category') === filter) {
+                        card.style.display = 'flex';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Project Modal Details Data
+        const projectModalData = {
+            'meshtastic-node': {
+                title: 'Meshtastic Mesh Node (TaMesh Network)',
+                badge: 'Mesh Radio Communication',
+                body: `<p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">Off-grid LoRa radio communication node on the TaMesh mesh network operating on the 868 MHz frequency band. Provides decentralized text messaging, GPS telemetry relay, and peer routing without cellular or internet infrastructure.</p>
+                       <div class="bg-emerald-50/70 dark:bg-emerald-950/60 p-3 rounded-lg border border-emerald-200 dark:border-emerald-800 font-mono text-xs space-y-1 text-slate-700 dark:text-slate-300">
+                           <div><strong class="text-slate-900 dark:text-white">Node ID:</strong> <span class="text-emerald-700 dark:text-emerald-400 font-bold">#004c</span></div>
+                           <div><strong class="text-slate-900 dark:text-white">Frequency:</strong> <span class="text-emerald-800 dark:text-emerald-300 font-bold">868 MHz</span></div>
+                           <div><strong class="text-slate-900 dark:text-white">Mesh Network:</strong> TaMesh Network</div>
+                           <div><strong>Protocol:</strong> Meshtastic LoRa Packet System</div>
+                       </div>`
+            },
+            'tars-ai-pan-tilt': {
+                title: 'TARS AI with Pan & Tilt Camera',
+                badge: 'Robotics & Vision',
+                repo: 'https://github.com/BrickFPV/Tars-Ai-With-Pan-Tilt-Camera',
+                body: `<p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">Interstellar-inspired TARS AI platform featuring active pan and tilt camera tracking. Powered by a Raspberry Pi 4 running gpt-oss 120B for active subject tracking and query processing.</p>
+                       <div class="bg-slate-50 dark:bg-slate-800 p-3 rounded-lg border border-slate-200 dark:border-slate-700 font-mono text-xs space-y-1 text-slate-700 dark:text-slate-300">
+                           <div><strong>Repo:</strong> <a href="https://github.com/BrickFPV/Tars-Ai-With-Pan-Tilt-Camera" target="_blank" class="text-brand-600 dark:text-brand-400 underline font-bold">BrickFPV/Tars-Ai-With-Pan-Tilt-Camera</a></div>
+                           <div><strong>Processor:</strong> Raspberry Pi 4</div>
+                           <div><strong>AI Model:</strong> gpt-oss 120B</div>
+                           <div><strong>Mechanism:</strong> 2-axis Pan-Tilt platform</div>
+                       </div>`
+            },
+            'tinywhoop-1s': {
+                title: '1S Custom Tinywhoop Setup',
+                badge: 'FPV Flight',
+                body: `<p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">Personal FPV flight gear for flying tinywhoops. Built with a custom 1S micro quadcopter setup engineered for fast agility, micro indoor racing, and precise flight control.</p>
+                       <div class="bg-slate-50 dark:bg-slate-800 p-3 rounded-lg border border-slate-200 dark:border-slate-700 font-mono text-xs space-y-1 text-slate-700 dark:text-slate-300">
+                           <div><strong>Quadcopter:</strong> Custom 1S tinywhoop quadcopter</div>
+                       </div>`
+            },
+            'home-server': {
+                title: 'Debian / CasaOS Local Server',
+                badge: 'Self-Hosted Infrastructure',
+                body: `<p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">Dedicated home server environment running Debian 12 Linux with CasaOS web dashboard management and Docker container support for local services.</p>
+                       <div class="bg-slate-50 dark:bg-slate-800 p-3 rounded-lg border border-slate-200 dark:border-slate-700 font-mono text-xs space-y-1 text-slate-700 dark:text-slate-300">
+                           <div><strong>Operating System:</strong> Debian 12 OS</div>
+                           <div><strong>Dashboard:</strong> CasaOS platform</div>
+                       </div>`
+            },
+            'hermes-ai': {
+                title: 'Hermes AI Agent Local Tooling',
+                badge: 'AI & Automation',
+                body: `<p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">Custom tool integrations built for the Hermes AI Agent platform to interface with local devices and educational services.</p>
+                       <div class="bg-slate-50 dark:bg-slate-800 p-3 rounded-lg border border-slate-200 dark:border-slate-700 font-mono text-xs space-y-1 text-slate-700 dark:text-slate-300">
+                           <div><strong>Custom made tools:</strong> Edupage connection, Printer connection</div>
+                       </div>`
+            },
+            'ender3-printing': {
+                title: 'Creality Ender-3 Fabrication Lab',
+                badge: '3D Fabrication',
+                body: `<p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">Calibrated Creality Ender-3 3D printer utilized for rapid fabrication of custom electronics enclosures, mounts, and hardware prototypes.</p>
+                       <div class="bg-slate-50 dark:bg-slate-800 p-3 rounded-lg border border-slate-200 dark:border-slate-700 font-mono text-xs space-y-1 text-slate-700 dark:text-slate-300">
+                           <div><strong>Printer:</strong> Creality Ender-3</div>
+                       </div>`
+            }
+        };
+
+        function openModal(projectId) {
+            const data = projectModalData[projectId];
+            if (!data) return;
+            const modalContent = document.getElementById('modal-content');
+            modalContent.innerHTML = `
+                <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+                    <span class="px-2.5 py-0.5 rounded-md bg-brand-50 dark:bg-brand-950 text-brand-700 dark:text-brand-300 text-xs font-mono font-bold">${data.badge}</span>
+                    ${data.repo ? `<a href="${data.repo}" target="_blank" class="text-xs font-mono text-slate-500 hover:text-slate-900 dark:hover:text-white flex items-center gap-1"><i class="fa-brands fa-github"></i> GitHub</a>` : ''}
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white">${data.title}</h3>
+                ${data.body}
+            `;
+            document.getElementById('project-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('project-modal').classList.add('hidden');
+        }
+
+        // CLI TERMINAL ENGINE
+        const termOutput = document.getElementById('terminal-output');
+        const termForm = document.getElementById('terminal-form');
+        const termInput = document.getElementById('terminal-input');
+
+        function printLine(htmlText, type = 'normal') {
+            const line = document.createElement('div');
+            if (type === 'cmd') {
+                line.className = 'text-brand-700 dark:text-brand-400 font-semibold mt-2';
+                line.innerHTML = `<span class="text-emerald-600 dark:text-emerald-400">ege@aliegebozkurt.dev:~$</span> ${htmlText}`;
+            } else if (type === 'error') {
+                line.className = 'text-rose-600 dark:text-rose-400';
+                line.innerHTML = htmlText;
+            } else {
+                line.className = 'text-slate-700 dark:text-slate-300 leading-relaxed';
+                line.innerHTML = htmlText;
+            }
+            termOutput.appendChild(line);
+            termOutput.scrollTop = termOutput.scrollHeight;
+        }
+
+        function runQuickCmd(cmd) {
+            termInput.value = cmd;
+            handleCommand(cmd);
+            termInput.value = '';
+        }
+
+        function handleCommand(rawCmd) {
+            const trimmed = rawCmd.trim();
+            if (!trimmed) return;
+
+            printLine(trimmed, 'cmd');
+
+            const parts = trimmed.split(' ');
+            const mainCmd = parts[0].toLowerCase();
+
+            switch (mainCmd) {
+                case 'help':
+                    printLine(`
+                        <div class="space-y-1 text-slate-700 dark:text-slate-300">
+                            <div><strong class="text-brand-600 dark:text-brand-400">help</strong> - List available CLI commands</div>
+                            <div><strong class="text-brand-600 dark:text-brand-400">whoami</strong> - Display bio and student details</div>
+                            <div><strong class="text-brand-600 dark:text-brand-400">neofetch</strong> - Render system & hardware overview</div>
+                            <div><strong class="text-emerald-600 dark:text-emerald-400">meshtastic</strong> - Print TaMesh node status (#004c on 868 MHz)</div>
+                            <div><strong class="text-brand-600 dark:text-brand-400">projects</strong> - List current engineering projects</div>
+                            <div><strong class="text-amber-600 dark:text-amber-400">awards</strong> - List awards & honors</div>
+                            <div><strong class="text-brand-600 dark:text-brand-400">contact</strong> - Output email & node details</div>
+                            <div><strong class="text-brand-600 dark:text-brand-400">clear</strong> - Clear terminal output console</div>
+                        </div>
+                    `);
+                    break;
+
+                case 'awards':
+                    printLine(`
+                        <div class="space-y-1">
+                            <div class="text-amber-600 dark:text-amber-400 font-bold">Awards & Achievements:</div>
+                            <div>1. 🥇 1st Place - FLL Challenge Submerged (2025)</div>
+                            <div>2. 🥇 1st Place - FLL Challenge Masterpiece (2024)</div>
+                            <div>3. 🥇 1st Place - Selçuklu Primary School 2nd National Coding Competition (2022)</div>
+                            <div>4. 🥇 1st Place - VEX Robotics Competition National Level (2021)</div>
+                            <div>5. 🥈 2nd Place - Selçuklu Primary School 1st National Coding Competition (2021)</div>
+                        </div>
+                    `);
+                    break;
+
+                case 'whoami':
+                    printLine(`
+                        <p class="text-brand-700 dark:text-brand-400 font-bold">Ali Ege Bozkurt (Ege)</p>
+                        <p>High school student at Bahçeşehir Koleji 50. Yıl Fen ve Teknoloji Lisesi focused on computer vision robotics, 868 MHz Meshtastic radio networks, 1S custom tinywhoop micro flight, Debian Linux home servers, and Ender-3 fabrication.</p>
+                    `);
+                    break;
+
+                case 'meshtastic':
+                    printLine(`
+                        <div class="bg-emerald-50/80 dark:bg-emerald-950/80 p-3 rounded border border-emerald-200 dark:border-emerald-800 font-mono text-xs space-y-1">
+                            <div class="font-bold text-emerald-800 dark:text-emerald-300">[TaMesh Radio Link Status]</div>
+                            <div>Node ID: <span class="font-bold text-emerald-900 dark:text-emerald-200">#004c</span></div>
+                            <div>Frequency Band: <span class="font-bold text-emerald-900 dark:text-emerald-200">868 MHz</span></div>
+                            <div>Network: TaMesh Mesh Network</div>
+                            <div>Status: Online / Active Node</div>
+                        </div>
+                    `);
+                    break;
+
+                case 'neofetch':
+                    printLine(`
+                        <div class="font-mono text-xs flex flex-col sm:flex-row gap-4 items-start py-2">
+                            <pre class="text-brand-600 dark:text-brand-400 leading-tight hidden sm:block">
+  ___  __   ____ 
+ / _ \\/ /  / __/
+/ ___/ /__/ _/  
+/_/  /____/___/  
+                            </pre>
+                            <div class="space-y-1">
+                                <div><span class="text-emerald-600 dark:text-emerald-400 font-bold">ege</span>@<span class="text-brand-600 dark:text-brand-400 font-bold">aliegebozkurt.dev</span></div>
+                                <div>-----------------------------</div>
+                                <div><strong class="text-slate-600 dark:text-slate-400">Domain:</strong> aliegebozkurt.dev</div>
+                                <div><strong class="text-emerald-600 dark:text-emerald-400">TaMesh Mesh Node:</strong> #004c (868 MHz)</div>
+                                <div><strong class="text-slate-600 dark:text-slate-400">GitHub:</strong> github.com/BrickFPV</div>
+                                <div><strong class="text-slate-600 dark:text-slate-400">FPV Flight:</strong> Tinywhoops (1S custom made)</div>
+                                <div><strong class="text-slate-600 dark:text-slate-400">Robotics Repo:</strong> BrickFPV/Tars-Ai-With-Pan-Tilt-Camera</div>
+                                <div><strong class="text-slate-600 dark:text-slate-400">3D Fabrication:</strong> Creality Ender-3 Enclosures</div>
+                                <div><strong class="text-slate-600 dark:text-slate-400">Server OS:</strong> Debian 12 / CasaOS Stack</div>
+                                <div><strong class="text-slate-600 dark:text-slate-400">Hermes Tools:</strong> Custom made tools: Edupage connection, Printer connection</div>
+                            </div>
+                        </div>
+                    `);
+                    break;
+
+                case 'projects':
+                    printLine(`
+                        <div class="space-y-1">
+                            <div class="text-slate-900 dark:text-white font-bold">Engineered Projects:</div>
+                            <div>1. <span class="text-emerald-600 dark:text-emerald-400 font-bold">meshtastic</span> - Meshtastic Node (#004c, 868 MHz)</div>
+                            <div>2. <span class="text-brand-600 dark:text-brand-400 font-semibold">tars-ai</span> - TARS AI with Pan & Tilt Camera (<a href="https://github.com/BrickFPV/Tars-Ai-With-Pan-Tilt-Camera" target="_blank" class="underline">GitHub Link</a>)</div>
+                            <div>3. <span class="text-amber-600 dark:text-amber-400 font-semibold">tinywhoop</span> - 1S Custom Made Tinywhoop Setup</div>
+                            <div>4. <span class="text-brand-600 dark:text-brand-400 font-semibold">home-server</span> - Debian 12 / CasaOS Local Server</div>
+                            <div>5. <span class="text-purple-600 dark:text-purple-400 font-semibold">hermes-ai</span> - Hermes AI Agent (Custom made tools: Edupage connection, Printer connection)</div>
+                            <div>6. <span class="text-sky-600 dark:text-sky-400 font-semibold">ender3</span> - Creality Ender-3 Fabrication Lab</div>
+                        </div>
+                    `);
+                    break;
+
+                case 'contact':
+                    printLine(`
+                        <div class="space-y-1">
+                            <div>Personal Email: <a href="mailto:aliegebozkurt12@gmail.com" class="text-brand-600 dark:text-brand-400 underline font-bold">aliegebozkurt12@gmail.com</a></div>
+                            <div>AI Agent Email: <a href="mailto:ai.aliegebozkurt@gmail.com" class="text-purple-600 dark:text-purple-400 underline font-bold">ai.aliegebozkurt@gmail.com</a></div>
+                            <div>GitHub: <a href="https://github.com/BrickFPV" target="_blank" class="text-slate-800 dark:text-slate-200 underline font-bold">github.com/BrickFPV</a></div>
+                        </div>
+                    `);
+                    break;
+
+                case 'clear':
+                    termOutput.innerHTML = '';
+                    break;
+
+                default:
+                    printLine(`Command not found: '${mainCmd}'. Type 'help' for available commands.`, 'error');
+            }
+        }
+
+        termForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            handleCommand(termInput.value);
+            termInput.value = '';
+        });
+    </script>
+</body>
+</html>

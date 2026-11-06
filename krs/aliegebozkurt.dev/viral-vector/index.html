@@ -1,0 +1,2431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>VIRAL VECTOR: HOST OVERRIDE // TEKNOLIG 2026</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+      margin: 0;
+      padding: 0;
+    }
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #F8F9FA;
+      font-family: 'Space Grotesk', -apple-system, sans-serif;
+      color: #111111;
+    }
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    canvas {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+      background-color: #F8F9FA;
+    }
+    .ui-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+      pointer-events: none;
+    }
+    .pointer-auto {
+      pointer-events: auto;
+    }
+    .swiss-panel {
+      background: rgba(255, 255, 255, 0.94);
+      border: 2px solid #111111;
+      box-shadow: 6px 6px 0px #111111;
+      backdrop-filter: blur(8px);
+    }
+    .swiss-btn {
+      background: #FF3B30;
+      color: #FFFFFF;
+      font-weight: 700;
+      transition: all 0.1s ease;
+      border: 2px solid #111111;
+      box-shadow: 4px 4px 0px #111111;
+    }
+    .swiss-btn:hover {
+      background: #111111;
+      color: #FF3B30;
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0px #FF3B30;
+    }
+    .swiss-btn:active {
+      transform: translate(0px, 0px);
+      box-shadow: 0px 0px 0px #111111;
+    }
+    .swiss-btn-outline {
+      background: #FFFFFF;
+      color: #111111;
+      font-weight: 700;
+      border: 2px solid #111111;
+      box-shadow: 4px 4px 0px #111111;
+      transition: all 0.1s ease;
+    }
+    .swiss-btn-outline:hover {
+      background: #111111;
+      color: #FFFFFF;
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0px #8E44AD;
+    }
+    .swiss-btn-outline:active {
+      transform: translate(0px, 0px);
+      box-shadow: 0px 0px 0px #111111;
+    }
+    .glitch-text {
+      letter-spacing: -0.05em;
+    }
+    @keyframes comboPop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.25); color: #FF3B30; text-shadow: 0 0 15px rgba(255,59,48,0.6); }
+      100% { transform: scale(1); }
+    }
+    .combo-pulse {
+      animation: comboPop 0.25s ease-out;
+    }
+  </style>
+</head>
+<body class="bg-[#F8F9FA] text-[#111111] overflow-hidden">
+
+  <!-- Vector Game Canvas -->
+  <canvas id="canvas"></canvas>
+
+  <!-- HUD overlay (Game Play) -->
+  <div id="hudGame" class="ui-layer flex flex-col justify-between p-6 md:p-10 opacity-0 transition-opacity duration-300 hidden">
+    <div class="flex justify-between items-start w-full max-w-7xl mx-auto">
+      <div>
+        <div class="text-[10px] font-mono tracking-widest text-[#FF3B30] uppercase font-bold" id="hudTitle">// MODE 1: CAMPAIGN BOSS</div>
+        <div id="hudObjective" class="text-2xl md:text-3xl font-extrabold font-mono text-[#111111]">
+          DEFEAT BOSS 1
+        </div>
+      </div>
+      <div class="flex items-center gap-6 font-mono">
+        <div class="bg-white border-2 border-[#111111] p-2 shadow-[4px_4px_0px_#111111] flex flex-col gap-1 w-36">
+          <div class="flex justify-between text-[10px] font-bold">
+            <span class="text-[#111111]/75">INTEGRITY</span>
+            <span id="hpText" class="text-[#FF3B30]">3 / 3</span>
+          </div>
+          <div class="w-full bg-[#111111]/10 h-3 border border-[#111111] overflow-hidden flex gap-0.5 p-0.5" id="hpBarContainer">
+            <div id="hpSegment1" class="bg-[#FF3B30] h-full flex-1 transition-all duration-200"></div>
+            <div id="hpSegment2" class="bg-[#FF3B30] h-full flex-1 transition-all duration-200"></div>
+            <div id="hpSegment3" class="bg-[#FF3B30] h-full flex-1 transition-all duration-200"></div>
+          </div>
+        </div>
+        <div>
+          <div class="text-[10px] text-[#111111]/50 uppercase font-bold">SCORE</div>
+          <div id="scoreText" class="text-2xl font-bold text-[#FF3B30]">0</div>
+        </div>
+        <div>
+          <div class="text-[10px] text-[#111111]/50 uppercase font-bold">VIRAL LOAD</div>
+          <div id="comboText" class="text-2xl font-bold text-[#8E44AD] transition-transform duration-150">x0</div>
+        </div>
+        <div id="antibioticHudBox">
+          <div class="text-[10px] text-[#111111]/50 uppercase font-bold">SUGAR</div>
+          <div id="antibioticText" class="text-2xl font-bold text-[#3498DB]">0 / 3</div>
+        </div>
+      </div>
+    </div>
+    <div class="flex justify-between items-end w-full max-w-7xl mx-auto font-mono text-xs">
+      <div id="bossHpContainer" class="bg-white border-2 border-[#111111] p-3 shadow-[4px_4px_0px_#111111] w-80">
+        <div class="flex justify-between text-xs font-bold mb-1">
+          <span id="bossNameLabel" class="text-[#FF3B30]">BOSS 1: MACROPHAGE TITAN</span>
+          <span id="bossHpText">10 / 10</span>
+        </div>
+        <div class="w-full bg-[#111111]/10 h-3 border border-[#111111] overflow-hidden p-0.5">
+          <div id="bossHpBar" class="bg-[#FF3B30] h-full transition-all duration-200" style="width: 100%;"></div>
+        </div>
+      </div>
+      <div class="text-right">
+        <div id="juryTag" class="hidden text-[10px] bg-[#FF3B30] text-white px-2 py-0.5 font-bold mb-1 uppercase">
+          JURY DEMO OVERRIDE ACTIVE
+        </div>
+        <div class="text-[11px] text-[#111111]/60">PRESS [ESC] TO PAUSE // 'R' TO RESTART</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HUD overlay (Overworld Map) -->
+  <div id="hudOverworld" class="ui-layer flex flex-col justify-between p-6 md:p-10 opacity-0 transition-opacity duration-300 hidden">
+    <div class="flex justify-between items-start w-full max-w-7xl mx-auto font-mono">
+      <div>
+        <div class="text-[10px] tracking-widest text-[#8E44AD] uppercase font-bold">// CAMPAIGN OVERWORLD MAP</div>
+        <div class="text-2xl md:text-3xl font-extrabold text-[#111111]">
+          SELECT BOSS NODE TO ENGAGE
+        </div>
+      </div>
+      <div class="bg-white border-2 border-[#111111] p-3 shadow-[4px_4px_0px_#111111] text-xs">
+        <span class="text-[#111111]/60">HIGH SCORE:</span> <span id="mapHighScore" class="font-bold text-[#FF3B30]">0</span>
+      </div>
+    </div>
+    <!-- Absolute positioned story box at bottom-left corner -->
+    <div class="absolute bottom-6 left-6 bg-white border-2 border-[#111111] p-4 shadow-[4px_4px_0px_#111111] max-w-sm font-mono text-xs pointer-auto z-20">
+      <div class="font-bold text-[#FF3B30] mb-1">// MISSION & STORY:</div>
+      <p class="text-[#111111]/80 leading-relaxed text-[11px] mb-2">
+        You are a rogue virus infiltrating the body's defense network. Your mission is to defeat all 5 boss levels and take complete control of the system!
+      </p>
+      <p class="text-[#111111]/60 text-[10px]">
+        Click and drag towards any unlocked glowing boss node, then release to start battle.
+      </p>
+    </div>
+
+    <!-- Return to menu button at bottom-right corner -->
+    <div class="absolute bottom-6 right-6 font-mono text-xs pointer-auto z-20">
+      <button id="backToMenuBtn" class="swiss-btn-outline px-4 py-2 uppercase font-mono text-xs">
+        RETURN TO MAIN MENU
+      </button>
+    </div>
+  </div>
+
+  <!-- START MENU -->
+  <div id="startMenu" class="ui-layer flex items-center justify-center p-6 pointer-auto">
+    <div class="swiss-panel w-full max-w-xl p-8 md:p-12 text-left relative">
+      <div class="text-xs font-mono font-bold tracking-widest text-[#FF3B30] uppercase mb-2">
+        TEKNOLIG 2026 // VIBECODING 2D // TEMA: VİRÜS
+      </div>
+      <h1 class="text-5xl md:text-7xl font-extrabold glitch-text tracking-tighter text-[#111111] mb-2 leading-none">
+        VIRAL VECTOR<br><span class="text-[#FF3B30]">HOST OVERRIDE</span>
+      </h1>
+
+      <div class="bg-[#F8F9FA] border-2 border-[#111111] p-3 mb-6 font-mono text-xs flex justify-between items-center shadow-[3px_3px_0px_#111111]">
+        <span class="text-[#111111]/60">// HIGH SCORE RECORD:</span>
+        <span id="menuHighScore" class="font-bold text-[#FF3B30] text-sm">0</span>
+      </div>
+
+      <div class="space-y-3">
+        <button id="mode1Btn" class="w-full swiss-btn py-4 text-sm tracking-wider uppercase font-mono flex items-center justify-center gap-3" style="background: #8E44AD;">
+          <span>MODE 1: CAMPAIGN MAP // 5 BOSS BATTLES</span>
+          <span class="text-xs">[CAMPAIGN]</span>
+        </button>
+
+        <button id="mode2Btn" class="w-full swiss-btn py-4 text-sm tracking-wider uppercase font-mono flex items-center justify-center gap-3">
+          <span>MODE 2: UNLIMITED OUTBREAK</span>
+          <span class="text-xs">[ENDLESS]</span>
+        </button>
+
+        <div class="space-y-3 pt-2">
+          <button id="testToolsBtn" class="w-full swiss-btn-outline py-3 text-xs tracking-wider uppercase font-mono">
+            TEST TOOLS
+          </button>
+        </div>
+
+        <button id="resetGameBtn" class="w-full swiss-btn-outline py-3 text-xs tracking-wider uppercase font-mono text-[#FF3B30] border-[#FF3B30] hover:bg-[#FF3B30] hover:text-white">
+          RESET GAME PROGRESS
+        </button>
+      </div>
+
+
+    </div>
+  </div>
+
+  <!-- PAUSE MENU -->
+  <div id="pauseMenu" class="ui-layer flex items-center justify-center p-6 hidden pointer-auto">
+    <div class="swiss-panel w-full max-w-md p-8 text-center relative">
+      <div class="text-xs font-mono font-bold tracking-widest text-[#8E44AD] uppercase mb-1">
+        [OUTBREAK PAUSED]
+      </div>
+      <h2 class="text-4xl font-extrabold tracking-tight text-[#111111] mb-6">
+        SYSTEM SUSPENDED
+      </h2>
+
+      <div class="space-y-2">
+        <button id="resumeBtn" class="w-full swiss-btn py-3 font-mono text-xs uppercase">
+          RESUME [ESC]
+        </button>
+        <button id="pauseMenuBtn" class="w-full swiss-btn-outline py-3 font-mono text-xs uppercase">
+          MAIN MENU
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TEST TOOLS MODAL -->
+  <div id="testToolsModal" class="ui-layer flex items-center justify-center p-6 hidden pointer-auto">
+    <div class="swiss-panel w-full max-w-lg p-8 text-left">
+      <div class="flex justify-between items-start mb-6 border-b-2 border-[#111111] pb-4">
+        <div>
+          <div class="text-[10px] font-mono font-bold text-[#FF3B30]">TEST TOOLS</div>
+          <h2 class="text-2xl font-extrabold tracking-tight">TEST TOOLS</h2>
+        </div>
+        <button id="closeTestToolsBtn" class="font-mono text-xs font-bold border-2 border-[#111111] px-2 py-1 hover:bg-[#111111] hover:text-white">[X]</button>
+      </div>
+
+
+
+      <div class="space-y-3 font-mono text-xs mb-8">
+        <button id="godToggleBtn" class="w-full border-2 border-[#111111] p-3 text-left flex justify-between items-center font-bold hover:bg-[#F8F9FA]">
+          <span>IMMUNE IMMUNITY (NO DAMAGE)</span>
+          <span id="godStatus" class="text-[#111111]/40">OFF</span>
+        </button>
+        <button id="unlockAllBtn" class="w-full border-2 border-[#111111] p-3 text-left flex justify-between items-center font-bold hover:bg-[#F8F9FA]" style="background: #8E44AD; color: white;">
+          <span>UNLOCK ALL 5 BOSS LEVELS</span>
+          <span id="unlockStatus" class="text-white">CLICK TO UNLOCK</span>
+        </button>
+      </div>
+
+      <button id="applyTestToolsBtn" class="w-full swiss-btn py-3 font-mono text-xs uppercase">
+        RETURN TO EVALUATION
+      </button>
+    </div>
+  </div>
+
+  <!-- RESET CONFIRMATION MODAL -->
+  <div id="resetModal" class="ui-layer flex items-center justify-center p-6 hidden pointer-auto">
+    <div class="swiss-panel w-full max-w-sm p-6 text-center">
+      <div class="text-[10px] font-mono font-bold text-[#FF3B30] uppercase mb-1">[WARNING: DESTRUCTIVE ACTION]</div>
+      <h3 class="text-2xl font-extrabold tracking-tight mb-3 text-[#111111]">RESET GAME PROGRESS?</h3>
+      <p class="text-xs font-mono text-[#111111]/70 mb-6 leading-relaxed">
+        This will permanently clear your high score records and reset campaign boss unlocks back to Level 1.
+      </p>
+      <div class="space-y-2 font-mono text-xs">
+        <button id="confirmResetBtn" class="w-full swiss-btn py-3 uppercase" style="background: #FF3B30;">
+          YES, RESET EVERYTHING
+        </button>
+        <button id="cancelResetBtn" class="w-full swiss-btn-outline py-3 uppercase">
+          CANCEL
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- GAME OVER / VICTORY MODAL -->
+  <div id="endModal" class="ui-layer flex items-center justify-center p-6 hidden pointer-auto">
+    <div id="endModalPanel" class="swiss-panel w-full max-w-md p-8 text-center relative">
+      <div id="endTag" class="text-xs font-mono font-bold tracking-widest text-[#FF3B30] uppercase mb-1">
+        [VIRION INTEGRITY DEPLETED]
+      </div>
+      <h2 id="endTitle" class="text-4xl font-extrabold tracking-tight text-[#111111] mb-4">
+        VIRION NEUTRALIZED
+      </h2>
+
+      <div class="bg-[#F8F9FA] border-2 border-[#111111] p-4 mb-6 font-mono text-left space-y-2 text-xs">
+        <div class="flex justify-between">
+          <span class="text-[#111111]/50">FINAL SCORE:</span>
+          <span id="endScore" class="font-bold text-[#FF3B30]">0</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-[#111111]/50" id="endStat1Label">RESULT:</span>
+          <span id="endStat1" class="font-bold text-[#8E44AD]">DEFEAT</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-[#111111]/50">HIGH SCORE:</span>
+          <span id="endHighScore" class="font-bold text-[#27AE60]">0</span>
+        </div>
+      </div>
+
+      <div class="space-y-2">
+        <button id="nextLevelBtn" class="w-full swiss-btn py-3 font-mono text-xs uppercase hidden" style="background: #27AE60;">
+          NEXT LEVEL
+        </button>
+        <button id="restartBtn" class="w-full swiss-btn py-3 font-mono text-xs uppercase">
+          RETRY LEVEL [PRESS R]
+        </button>
+        <button id="mapReturnBtn" class="w-full swiss-btn-outline py-3 font-mono text-xs uppercase">
+          RETURN TO OVERWORLD MAP
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ==========================================================================
+       VIRAL VECTOR: HOST OVERRIDE - 7 BOSS CAMPAIGN & UNLIMITED OUTBREAK
+       ========================================================================== */
+
+    class BiologicalSoundEngine {
+      constructor() {
+        this.ctx = null;
+      }
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioContext();
+        }
+        if (this.ctx.state === 'suspended') this.ctx.resume();
+      }
+      playLaunch() {
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(300, now);
+        osc.frequency.exponentialRampToValueAtTime(1400, now + 0.1);
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.1);
+      }
+      playLatch() {
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(1000, now);
+        osc.frequency.exponentialRampToValueAtTime(250, now + 0.12);
+        gain.gain.setValueAtTime(0.35, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.12);
+      }
+      playLysis() {
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(220, now);
+        osc.frequency.exponentialRampToValueAtTime(25, now + 0.4);
+        gain.gain.setValueAtTime(0.45, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.4);
+      }
+      playOrb() {
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(500, now);
+        osc.frequency.exponentialRampToValueAtTime(1600, now + 0.15);
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.15);
+      }
+      playShield() {
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(400, now);
+        osc.frequency.exponentialRampToValueAtTime(1200, now + 0.3);
+        gain.gain.setValueAtTime(0.35, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.3);
+      }
+      playBossHit() {
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(150, now);
+        osc.frequency.exponentialRampToValueAtTime(600, now + 0.3);
+        gain.gain.setValueAtTime(0.5, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.3);
+      }
+      playHit() {
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(180, now);
+        osc.frequency.linearRampToValueAtTime(40, now + 0.3);
+        gain.gain.setValueAtTime(0.4, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.3);
+      }
+      playBossRoar() {
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(90, now);
+        osc.frequency.linearRampToValueAtTime(40, now + 0.5);
+        gain.gain.setValueAtTime(0.6, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.5);
+      }
+      playCrystal() {
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        [880, 1174, 1760].forEach((freq, i) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + i * 0.06);
+          gain.gain.setValueAtTime(0.25, now + i * 0.06);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.06 + 0.15);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now + i * 0.06);
+          osc.stop(now + i * 0.06 + 0.15);
+        });
+      }
+      playWin() {
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, now + i * 0.12);
+          gain.gain.setValueAtTime(0.35, now + i * 0.12);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.12 + 0.4);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now + i * 0.12);
+          osc.stop(now + i * 0.12 + 0.4);
+        });
+      }
+      playLose() {
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        [300, 240, 180, 120].forEach((freq, i) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(freq, now + i * 0.15);
+          gain.gain.setValueAtTime(0.4, now + i * 0.15);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.15 + 0.35);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now + i * 0.15);
+          osc.stop(now + i * 0.15 + 0.35);
+        });
+      }
+    }
+    const audio = new BiologicalSoundEngine();
+
+    class BiologicalMusicEngine {
+      constructor() {
+        this.ctx = null;
+        this.timer = null;
+        this.step = 0;
+        this.isPlaying = false;
+      }
+      init(audioCtx) {
+        this.ctx = audioCtx;
+      }
+      start() {
+        if (this.isPlaying) return;
+        this.isPlaying = true;
+        this.step = 0;
+        this.timer = setInterval(() => this.tick(), 120);
+      }
+      stop() {
+        this.isPlaying = false;
+        if (this.timer) {
+          clearInterval(this.timer);
+          this.timer = null;
+        }
+      }
+      tick() {
+        if (!this.isPlaying || !audio.ctx || audio.ctx.state !== 'running') return;
+        const inMenu = gameState === 'menu' || gameState === 'overworld';
+        const bossLevel = state.bossLevel;
+
+        if (inMenu) {
+          const menuNotes = [130.81, 164.81, 196.00, 246.94];
+          if (this.step % 4 === 0) {
+            this.playSynthNote(menuNotes[(this.step / 4) % menuNotes.length], 0.2, 0.3, 'sine');
+          }
+        } else if (gameMode === 'unlimited') {
+          const bassNotes = [110, 110, 146.83, 130.81];
+          const arpNotes = [220, 330, 440, 554.37, 659.25, 880];
+          if (this.step % 4 === 0) {
+            this.playSynthNote(bassNotes[(this.step / 4) % bassNotes.length], 0.15, 0.4, 'sawtooth');
+          }
+          if (this.step % 2 === 0) {
+            this.playSynthNote(arpNotes[Math.floor(Math.random() * arpNotes.length)], 0.1, 0.2, 'triangle');
+          }
+        } else if (gameMode === 'campaign') {
+          // Distinct musical styles & melodies per boss level!
+          const l = bossLevel;
+          if (l === 1) {
+            // Level 1: Driving industrial pulse
+            const notes = [110, 165, 110, 220];
+            if (this.step % 2 === 0) this.playSynthNote(notes[(this.step / 2) % notes.length], 0.1, 0.35, 'sawtooth');
+            if (this.step % 4 === 0) this.playNoiseHit(0.04, 0.3);
+          } else if (l === 2) {
+            // Level 2: Fast chaotic arpeggio
+            const notes = [220, 277, 330, 440, 554];
+            if (this.step % 2 === 0) this.playSynthNote(notes[Math.floor(Math.random() * notes.length)], 0.08, 0.3, 'triangle');
+          } else if (l === 3) {
+            // Level 3: Deep sub-bass throb with high chime
+            const bass = [82.4, 98.0, 73.4, 82.4];
+            if (this.step % 4 === 0) this.playSynthNote(bass[(this.step / 4) % bass.length], 0.25, 0.45, 'sawtooth');
+            if (this.step % 2 === 0) this.playSynthNote(659.25, 0.05, 0.2, 'sine');
+          } else if (l === 4) {
+            // Level 4: T-Cell tactical syncopated rhythm
+            const notes = [146.8, 220, 293.6, 349.2];
+            if (this.step % 2 === 0) this.playSynthNote(notes[this.step % notes.length], 0.1, 0.35, 'square');
+            if (this.step % 8 === 0) this.playNoiseHit(0.08, 0.4);
+          } else if (l === 5) {
+            // Level 5: B-Cell harmonic wave
+            const notes = [174.6, 261.6, 329.6, 392.0];
+            if (this.step % 4 === 0) this.playSynthNote(notes[(this.step / 4) % notes.length], 0.2, 0.3, 'sine');
+          } else if (l === 6) {
+            // Level 6: Complement dark minor sequence
+            const notes = [123.4, 146.8, 185.0, 220.0];
+            if (this.step % 2 === 0) this.playSynthNote(notes[(this.step / 2) % notes.length], 0.12, 0.4, 'sawtooth');
+          } else {
+            // Level 7: Apoptosis Omega frantic chaotic boss groove
+            const notes = [110, 220, 440, 330, 165, 493.8];
+            if (this.step % 2 === 0) this.playSynthNote(notes[Math.floor(Math.random() * notes.length)], 0.08, 0.4, 'square');
+            if (this.step % 2 === 0) this.playNoiseHit(0.05, 0.4);
+          }
+        }
+        this.step = (this.step + 1) % 64;
+      }
+      playSynthNote(freq, dur, vol, type) {
+        if (!audio.ctx) return;
+        const now = audio.ctx.currentTime;
+        const osc = audio.ctx.createOscillator();
+        const gain = audio.ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, now);
+        gain.gain.setValueAtTime(vol, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + dur);
+        osc.connect(gain);
+        gain.connect(audio.ctx.destination);
+        osc.start(now);
+        osc.stop(now + dur);
+      }
+      playNoiseHit(dur, vol) {
+        if (!audio.ctx) return;
+        const now = audio.ctx.currentTime;
+        const bufferSize = audio.ctx.sampleRate * dur;
+        const buffer = audio.ctx.createBuffer(1, bufferSize, audio.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = Math.random() * 2 - 1;
+        }
+        const noise = audio.ctx.createBufferSource();
+        noise.buffer = buffer;
+        const filter = audio.ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(900, now);
+        const gain = audio.ctx.createGain();
+        gain.gain.setValueAtTime(vol, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + dur);
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(audio.ctx.destination);
+        noise.start(now);
+      }
+    }
+    const musicEngine = new BiologicalMusicEngine();
+
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+
+    let WORLD_WIDTH = 3500;
+    let WORLD_HEIGHT = 3500;
+
+    const camera = {
+      x: 0,
+      y: 0,
+      update(targetX, targetY) {
+        if (gameState === 'overworld' || (gameMode === 'campaign' && gameState === 'game')) {
+          this.x = 0;
+          this.y = 0;
+          return;
+        }
+        this.x += (targetX - width / 2 - this.x) * 0.1;
+        this.y += (targetY - height / 2 - this.y) * 0.1;
+        this.x = Math.max(0, Math.min(WORLD_WIDTH - width, this.x));
+        this.y = Math.max(0, Math.min(WORLD_HEIGHT - height, this.y));
+      }
+    };
+
+    let gameState = 'menu'; // 'menu', 'overworld', 'game'
+    let gameMode = 'campaign'; // 'campaign' (Mode 1), 'unlimited' (Mode 2)
+
+    const state = {
+      isPaused: false,
+      isGameOver: false,
+      driftMode: false,
+      driftTimer: 0,
+      redTintAlpha: 0,
+      lysisCount: 0,
+      score: 0,
+      highScore: parseInt(localStorage.getItem('viral_vector_highscore') || '0', 10),
+      highestUnlockedBoss: parseInt(localStorage.getItem('viral_vector_unlocked_boss') || '1', 10),
+      combo: 0,
+      maxCombo: 0,
+      hp: 3,
+      maxHp: 3,
+      timeScale: 1.0,
+      targetTimeScale: 1.0,
+      godMode: false,
+      screenShake: 0,
+      globalTimer: 0,
+      bossLevel: 1,
+      antibioticsEaten: 0,
+      boss: null
+    };
+
+    const mouse = { x: width / 2, y: height / 2, down: false };
+
+    window.addEventListener('mousemove', (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    });
+
+    window.addEventListener('mousedown', (e) => {
+      if (e.button === 0 && (gameState === 'overworld' || (gameState === 'game' && !state.isPaused && !state.isGameOver))) {
+        audio.init();
+        mouse.down = true;
+      }
+    });
+
+    window.addEventListener('mouseup', (e) => {
+      if (e.button === 0 && mouse.down) {
+        mouse.down = false;
+        if (gameState === 'game') {
+          player.launch();
+        } else if (gameState === 'overworld') {
+          player.launch();
+        }
+      }
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' && gameState === 'game' && !state.isPaused && !state.isGameOver && !mouse.down) {
+        audio.init();
+        mouse.down = true;
+      }
+      if (e.code === 'Escape') {
+        if (gameState === 'game' && !state.isGameOver) {
+          togglePause();
+        }
+      }
+      if (e.key === 'r' || e.key === 'R') {
+        if (gameState === 'game') restartGame();
+      }
+    });
+
+    window.addEventListener('keyup', (e) => {
+      if (e.code === 'Space' && mouse.down) {
+        mouse.down = false;
+        if (gameState === 'game') player.launch();
+        else if (gameState === 'overworld') player.launch();
+      }
+    });
+
+    function togglePause() {
+      state.isPaused = !state.isPaused;
+      document.getElementById('pauseMenu').classList.toggle('hidden', !state.isPaused);
+    }
+
+    let floatingTexts = [];
+    function spawnFloatingText(x, y, text, color = '#FF3B30', scale = 1.0) {
+      floatingTexts.push({ x, y, text, color, scale, life: 1.0, vy: -1.8 });
+    }
+
+    let comboRings = [];
+    function spawnComboRing(x, y, color, radiusOverride = null) {
+      const maxRad = radiusOverride !== null ? radiusOverride : Math.min(130, 50 + state.combo * 14);
+      comboRings.push({ x, y, radius: 10, maxRadius: maxRad, color, life: 1.0 });
+    }
+
+    // Overworld Boss Nodes (7 Nodes on the Map)
+    let overworldNodes = [];
+    function initOverworldMap() {
+      gameState = 'overworld';
+      WORLD_WIDTH = window.innerWidth;
+      WORLD_HEIGHT = window.innerHeight;
+      overworldNodes = [];
+      nodes = [];
+      sentinels = [];
+      mutationOrbs = [];
+      sugarCrystals = [];
+      bossProjectiles = [];
+      state.boss = null;
+      state.isGameOver = false;
+      state.driftMode = false;
+      state.redTintAlpha = 0;
+
+      const centerX = WORLD_WIDTH / 2;
+      const centerY = WORLD_HEIGHT / 2;
+      const radiusDist = Math.min(WORLD_WIDTH, WORLD_HEIGHT) * 0.35;
+
+      const bossNames = [
+        "1. Macrophage Titan",
+        "2. Neutrophil Swarm King",
+        "3. Dendritic Core Overlord",
+        "4. T-Cell General",
+        "5. Apoptosis Omega Core"
+      ];
+
+      for (let i = 0; i < 5; i++) {
+        const angle = (i / 5) * Math.PI * 2 - Math.PI / 2;
+        const nx = centerX + Math.cos(angle) * radiusDist;
+        const ny = centerY + Math.sin(angle) * radiusDist;
+        const level = i + 1;
+        const unlocked = level <= state.highestUnlockedBoss;
+        overworldNodes.push({
+          x: nx,
+          y: ny,
+          level: level,
+          name: bossNames[i],
+          radius: 35,
+          unlocked: unlocked
+        });
+      }
+
+      player.reset(centerX, centerY);
+      camera.x = 0;
+      camera.y = 0;
+      document.getElementById('startMenu').classList.add('hidden');
+      document.getElementById('pauseMenu').classList.add('hidden');
+      document.getElementById('endModal').classList.add('hidden');
+      document.getElementById('hudGame').classList.add('hidden');
+      document.getElementById('hudGame').classList.add('opacity-0');
+      document.getElementById('hudOverworld').classList.remove('hidden');
+      document.getElementById('hudOverworld').classList.remove('opacity-0');
+      document.getElementById('mapHighScore').innerText = state.highScore;
+      updateHUD();
+    }
+
+    class SugarCrystal {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.radius = 16;
+        this.collected = false;
+        this.floatPhase = Math.random() * Math.PI * 2;
+      }
+      update(dt) {
+        this.floatPhase += 0.06 * dt;
+      }
+      collect() {
+        if (this.collected) return;
+        this.collected = true;
+        audio.playCrystal();
+        state.antibioticsEaten++;
+        
+        const margin = 120;
+        let rx, ry, distToBoss;
+        let attempts = 0;
+        do {
+          rx = margin + Math.random() * (WORLD_WIDTH - margin * 2);
+          ry = margin + Math.random() * (WORLD_HEIGHT - margin * 2);
+          distToBoss = state.boss ? Math.hypot(rx - state.boss.x, ry - state.boss.y) : 999;
+          attempts++;
+        } while (distToBoss < 200 && attempts < 20);
+        sugarCrystals.push(new SugarCrystal(rx, ry));
+        
+        spawnComboRing(this.x, this.y, '#3498DB', 100);
+        createCytoplasmParticles(this.x, this.y, '#3498DB', 25, 8);
+        spawnFloatingText(this.x, this.y - 30, `SUGAR EATEN! (${state.antibioticsEaten})`, '#3498DB', 1.3);
+        updateHUD();
+      }
+      draw() {
+        if (this.collected) return;
+        const floatOffset = Math.sin(this.floatPhase) * 5;
+        ctx.save();
+        ctx.translate(this.x, this.y + floatOffset);
+
+        ctx.beginPath();
+        for (let i = 0; i < 4; i++) {
+          const a = (i / 4) * Math.PI * 2 + Math.PI / 4;
+          const px = Math.cos(a) * this.radius;
+          const py = Math.sin(a) * this.radius;
+          if (i === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
+        ctx.closePath();
+        ctx.fillStyle = '#3498DB';
+        ctx.strokeStyle = '#111111';
+        ctx.lineWidth = 2.5;
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(0, 0, 5, 0, Math.PI * 2);
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    class BossProjectile {
+      constructor(x, y, targetX, targetY, speedMultiplier = 1.0) {
+        this.x = x;
+        this.y = y;
+        this.radius = 8;
+        const angle = Math.atan2(targetY - y, targetX - x);
+        const speed = 11.0 * speedMultiplier;
+        this.vx = Math.cos(angle) * speed;
+        this.vy = Math.sin(angle) * speed;
+        this.life = 180;
+      }
+      update(dt) {
+        this.x += this.vx * dt;
+        this.y += this.vy * dt;
+        this.life -= dt;
+
+        const hitDist = Math.hypot(this.x - player.x, this.y - player.y);
+        if (hitDist < this.radius + player.radius) {
+          player.takeDamage(1);
+          this.life = 0;
+          createCytoplasmParticles(this.x, this.y, '#C0392B', 12, 4);
+        }
+      }
+      draw() {
+        if (this.life <= 0) return;
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.beginPath();
+        ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = '#C0392B';
+        ctx.strokeStyle = '#111111';
+        ctx.lineWidth = 2;
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(0, 0, 3, 0, Math.PI * 2);
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    class UniqueBoss {
+      constructor(level, x, y) {
+        this.level = level;
+        this.x = x;
+        this.y = y;
+        this.radius = 45 + level * 4;
+        this.maxHp = 14 + level * 4;
+        this.hp = this.maxHp;
+        this.baseSpeed = 1.8 + level * 0.3;
+        this.angle = 0;
+        this.defeated = false;
+        this.hitFlashTimer = 0;
+        this.spawnTimer = 0;
+        this.projectileTimer = 0;
+        this.specialTimer = 0;
+        this.teleportTimer = 0;
+
+        // Unique color themes & distinctive mechanics per boss
+        const themes = [
+          { primary: '#C0392B', core: '#8E44AD', name: 'L1: MACROPHAGE TITAN (Chaser & Minion Spawn)' },
+          { primary: '#D35400', core: '#F1C40F', name: 'L2: NEUTROPHIL SWARM KING (Rapid Dash Swarm)' },
+          { primary: '#27AE60', core: '#2980B9', name: 'L3: DENDRITIC CORE OVERLORD (Triple Spread Blast)' },
+          { primary: '#8E44AD', core: '#E74C3C', name: 'L4: T-CELL GENERAL (Rotating Laser Shield)' },
+          { primary: '#2980B9', core: '#1ABC9C', name: 'L5: B-CELL ANTIBODY MATRIX (Homing Mines)' },
+          { primary: '#E67E22', core: '#C0392B', name: 'L6: COMPLEMENT CASCADE PRIME (Bouncing Enzyme Waves)' },
+          { primary: '#111111', core: '#FF3B30', name: 'L7: APOPTOSIS OMEGA CORE (Teleport & Radial Shockwaves)' }
+        ];
+        this.theme = themes[level - 1] || themes[0];
+      }
+
+      update(dt) {
+        if (this.defeated) return;
+        if (this.hitFlashTimer > 0) this.hitFlashTimer -= dt;
+
+        const speedMultiplier = 1.0 + (this.maxHp - this.hp) * 0.04;
+        const currentSpeed = this.baseSpeed * speedMultiplier;
+
+        const dx = player.x - this.x;
+        const dy = player.y - this.y;
+        const dist = Math.hypot(dx, dy) || 1;
+
+        // DIFFERENT BOSS MECHANICS PER LEVEL:
+        if (this.level === 7) {
+          // L7: Apoptosis Omega - Teleports randomly every 120 frames and fires radial shockwave!
+          this.teleportTimer += dt;
+          if (this.teleportTimer > 100) {
+            this.teleportTimer = 0;
+            this.x = 150 + Math.random() * (WORLD_WIDTH - 300);
+            this.y = 150 + Math.random() * (WORLD_HEIGHT - 300);
+            audio.playBossRoar();
+            createCytoplasmParticles(this.x, this.y, '#FF3B30', 30, 8);
+            spawnFloatingText(this.x, this.y - 50, 'APOPTOSIS TELEPORT OMEGA!', '#FF3B30', 1.4);
+            // Radial shockwave
+            for (let i = 0; i < 6; i++) {
+              const a = (i / 6) * Math.PI * 2;
+              bossProjectiles.push(new BossProjectile(this.x, this.y, this.x + Math.cos(a)*200, this.y + Math.sin(a)*200, 1.4));
+            }
+          }
+        }
+
+        let vx = (dx / dist) * currentSpeed;
+        let vy = (dy / dist) * currentSpeed;
+
+        if (this.level === 2) {
+          // L2: Neutrophil Swarm King - Sudden aggressive lunges
+          if (Math.random() < 0.02) {
+            vx *= 3.5;
+            vy *= 3.5;
+          }
+        }
+
+        this.x += vx * dt;
+        this.y += vy * dt;
+        this.angle += (0.02 + this.level * 0.012) * dt;
+
+        // Minion spawning
+        this.spawnTimer += dt;
+        const spawnThreshold = Math.max(45, 110 - this.level * 10);
+        if (this.spawnTimer > spawnThreshold) {
+          this.spawnTimer = 0;
+          if (sentinels.length < 8 + this.level) {
+            spawnRandomSentinel();
+            spawnFloatingText(this.x, this.y - 45, `${this.theme.name.split(':')[1]} SPAWNED MINION!`, this.theme.primary);
+          }
+        }
+
+        // Distinct attack mechanics
+        this.projectileTimer += dt;
+        const projThreshold = Math.max(30, 85 - this.level * 7);
+        if (this.projectileTimer > projThreshold) {
+          this.projectileTimer = 0;
+
+          if (this.level === 3) {
+            // L3: Triple Spread Blast
+            const baseAngle = Math.atan2(dy, dx);
+            for (let i = -1; i <= 1; i++) {
+              const spreadAngle = baseAngle + i * 0.35;
+              const tx = this.x + Math.cos(spreadAngle) * 300;
+              const ty = this.y + Math.sin(spreadAngle) * 300;
+              bossProjectiles.push(new BossProjectile(this.x, this.y, tx, ty, 1.1));
+            }
+            audio.playOrb();
+            spawnFloatingText(this.x, this.y - 50, 'TRIPLE SPREAD BLAST!', '#27AE60');
+          } else if (this.level === 5) {
+            // L5: Homing Antibody Matrix Blast
+            for (let i = 0; i < 2; i++) {
+              bossProjectiles.push(new BossProjectile(this.x, this.y, player.x + (Math.random()-0.5)*150, player.y + (Math.random()-0.5)*150, 0.9));
+            }
+            audio.playOrb();
+            spawnFloatingText(this.x, this.y - 50, 'HOMING ANTIBODY MATRIX!', '#2980B9');
+          } else {
+            // Standard / other levels
+            const count = this.level >= 4 ? 2 : 1;
+            for (let i = 0; i < count; i++) {
+              bossProjectiles.push(new BossProjectile(this.x, this.y, player.x, player.y, 1.0 + this.level * 0.1));
+            }
+            audio.playOrb();
+            spawnFloatingText(this.x, this.y - 50, 'TOXIC ENZYME RELEASE!', '#C0392B');
+          }
+        }
+      }
+
+      takeDamage(amount) {
+        if (this.defeated) return;
+        this.hp = Math.max(0, this.hp - amount);
+        this.hitFlashTimer = 30;
+        audio.playBossHit();
+        triggerScreenShake(12);
+        createCytoplasmParticles(this.x, this.y, this.theme.primary, 35, 10);
+        spawnFloatingText(this.x, this.y - 60, `BOSS DAMAGED! HP: ${this.hp}/${this.maxHp}`, this.theme.primary, 1.5);
+        updateHUD();
+
+        if (this.hp <= 0) {
+          this.defeated = true;
+          triggerBossVictory();
+        }
+      }
+
+      draw() {
+        if (this.defeated) return;
+
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.angle);
+
+        const isFlashing = this.hitFlashTimer > 0 && Math.floor(this.hitFlashTimer / 4) % 2 === 0;
+
+        ctx.beginPath();
+        const spikes = 10 + this.level * 2;
+        for (let i = 0; i < spikes; i++) {
+          const a = (i / spikes) * Math.PI * 2;
+          const r = this.radius + Math.sin(a * (4 + this.level) + state.globalTimer * 6) * (8 + this.level * 2);
+          const px = Math.cos(a) * r;
+          const py = Math.sin(a) * r;
+          if (i === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
+        ctx.closePath();
+
+        ctx.fillStyle = isFlashing ? '#FFFFFF' : this.theme.primary;
+        ctx.strokeStyle = '#111111';
+        ctx.lineWidth = 4;
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(0, 0, 22 + this.level * 2, 0, Math.PI * 2);
+        ctx.fillStyle = this.theme.core;
+        ctx.fill();
+        ctx.strokeStyle = '#111111';
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(0, 0, 8, 0, Math.PI * 2);
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fill();
+
+        ctx.restore();
+      }
+    }
+
+    class MutationOrb {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.radius = 9;
+        this.collected = false;
+        this.floatPhase = Math.random() * Math.PI * 2;
+      }
+      update(dt) {
+        this.floatPhase += 0.08 * dt;
+      }
+      collect() {
+        if (this.collected) return;
+        this.collected = true;
+        audio.playOrb();
+        state.combo += 2;
+        if (state.combo > state.maxCombo) state.maxCombo = state.combo;
+        
+        spawnComboRing(this.x, this.y, '#FF3B30', 90);
+        createCytoplasmParticles(this.x, this.y, '#FF3B30', 22, 7);
+        spawnFloatingText(this.x, this.y - 25, 'MUTATION ORB! +2 COMBO', '#FF3B30', 1.3);
+        updateHUD();
+
+        sentinels.forEach(s => {
+          const d = Math.hypot(this.x - s.x, this.y - s.y);
+          if (d < 180) {
+            s.stunTimer = 60;
+            createCytoplasmParticles(s.x, s.y, '#8E44AD', 8, 4);
+          }
+        });
+      }
+      draw() {
+        if (this.collected) return;
+        const floatOffset = Math.sin(this.floatPhase) * 4;
+        ctx.save();
+        ctx.translate(this.x, this.y + floatOffset);
+        
+        ctx.beginPath();
+        ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = '#FF3B30';
+        ctx.fill();
+        ctx.strokeStyle = '#111111';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(0, 0, 3, 0, Math.PI * 2);
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    class VirionPlayer {
+      constructor() {
+        this.x = WORLD_WIDTH / 2;
+        this.y = WORLD_HEIGHT / 2;
+        this.vx = 0;
+        this.vy = 0;
+        this.radius = 12;
+        this.latchedNode = null;
+        this.trail = [];
+        this.rotation = 0;
+        this.spikes = 8;
+        this.hitCooldown = 0;
+        this.shieldTimer = 0;
+      }
+
+      reset(x, y) {
+        this.x = x;
+        this.y = y;
+        this.vx = 0;
+        this.vy = 0;
+        this.latchedNode = null;
+        this.trail = [];
+        this.rotation = 0;
+        this.hitCooldown = 0;
+        this.shieldTimer = 0;
+      }
+
+      launch() {
+        audio.playLaunch();
+        if (this.latchedNode) {
+          this.latchedNode.triggerLysis();
+          this.latchedNode = null;
+        }
+
+        const worldMouseX = mouse.x + camera.x;
+        const worldMouseY = mouse.y + camera.y;
+        const angle = Math.atan2(worldMouseY - this.y, worldMouseX - this.x);
+        
+        const speedBonus = Math.min(20, state.combo * 1.8);
+        const speed = 22 + speedBonus;
+
+        this.vx = Math.cos(angle) * speed;
+        this.vy = Math.sin(angle) * speed;
+
+        createCytoplasmParticles(this.x, this.y, '#FF3B30', 16, 5);
+        spawnFloatingText(this.x, this.y - 20, `VELOCITY x${(speed/22).toFixed(1)}!`, '#FF3B30');
+      }
+
+      takeDamage(amount) {
+        if (gameState !== 'game' || state.isGameOver || state.godMode || this.hitCooldown > 0) return;
+        
+        if (this.shieldTimer > 0) {
+          this.shieldTimer = 0;
+          audio.playShield();
+          triggerScreenShake(4);
+          createCytoplasmParticles(this.x, this.y, '#8E44AD', 20, 6);
+          spawnFloatingText(this.x, this.y - 30, 'SHIELD ABSORBED HIT!', '#8E44AD', 1.3);
+          return;
+        }
+
+        state.hp = Math.max(0, state.hp - amount);
+        this.hitCooldown = 50;
+
+        if (state.combo > 0) {
+          spawnFloatingText(this.x, this.y - 40, 'COMBO RESET!', '#FF3B30', 1.4);
+          state.combo = 0;
+        }
+
+        audio.playHit();
+        triggerScreenShake(8);
+        createCytoplasmParticles(this.x, this.y, '#FF3B30', 18, 6);
+        spawnFloatingText(this.x, this.y - 25, 'INTEGRITY LOST!', '#FF3B30');
+        updateHUD();
+
+        if (state.hp <= 0) {
+          triggerGameOver();
+        }
+      }
+
+      update(dt) {
+        this.rotation += 0.04 * dt;
+        if (this.hitCooldown > 0) this.hitCooldown -= dt;
+        if (this.shieldTimer > 0) this.shieldTimer -= dt / 60;
+
+        if (state.driftMode) {
+          this.x += this.vx * dt;
+          this.y += this.vy * dt;
+          this.vx *= 0.94;
+          this.vy *= 0.94;
+          return;
+        }
+
+        if (this.latchedNode) {
+          this.x += (this.latchedNode.x - this.x) * 0.35;
+          this.y += (this.latchedNode.y - this.y) * 0.35;
+          this.vx = 0;
+          this.vy = 0;
+        } else {
+          this.x += this.vx * dt;
+          this.y += this.vy * dt;
+          this.vx *= 0.985;
+          this.vy *= 0.985;
+
+          const margin = 30;
+          if (this.x < margin) { this.x = margin; this.vx *= -1; }
+          if (this.x > WORLD_WIDTH - margin) { this.x = WORLD_WIDTH - margin; this.vx *= -1; }
+          if (this.y < margin) { this.y = margin; this.vy *= -1; }
+          if (this.y > WORLD_HEIGHT - margin) { this.y = WORLD_HEIGHT - margin; this.vy *= -1; }
+
+          if (gameState === 'overworld') {
+            overworldNodes.forEach(node => {
+              const d = Math.hypot(this.x - node.x, this.y - node.y);
+              if (d < this.radius + node.radius) {
+                if (node.unlocked) {
+                  audio.playLatch();
+                  startBossLevel(node.level);
+                } else {
+                  spawnFloatingText(node.x, node.y - 40, 'BOSS LOCKED! DEFEAT PREVIOUS BOSS FIRST', '#FF3B30');
+                  this.vx *= -1;
+                  this.vy *= -1;
+                }
+              }
+            });
+          }
+
+          if (gameState === 'game' && gameMode === 'campaign' && state.boss && !state.boss.defeated) {
+            const distBoss = Math.hypot(this.x - state.boss.x, this.y - state.boss.y);
+            if (distBoss < this.radius + state.boss.radius + 5) {
+              if (state.antibioticsEaten >= 3) {
+                state.antibioticsEaten -= 3;
+                state.boss.takeDamage(2);
+                const angleAway = Math.atan2(this.y - state.boss.y, this.x - state.boss.x);
+                this.vx = Math.cos(angleAway) * 28;
+                this.vy = Math.sin(angleAway) * 28;
+                updateHUD();
+              } else {
+                this.takeDamage(1);
+                const angleAway = Math.atan2(this.y - state.boss.y, this.x - state.boss.x);
+                this.vx = Math.cos(angleAway) * 25;
+                this.vy = Math.sin(angleAway) * 25;
+              }
+            }
+          }
+
+          mutationOrbs.forEach(orb => {
+            if (!orb.collected) {
+              const d = Math.hypot(this.x - orb.x, this.y - orb.y);
+              if (d < this.radius + orb.radius + 12) {
+                orb.collect();
+              }
+            }
+          });
+
+          if (gameState === 'game' && gameMode === 'campaign') {
+            sugarCrystals.forEach(crystal => {
+              if (!crystal.collected) {
+                const d = Math.hypot(this.x - crystal.x, this.y - crystal.y);
+                if (d < this.radius + crystal.radius + 12) {
+                  crystal.collect();
+                }
+              }
+            });
+          }
+
+          nodes.forEach((node) => {
+            if (!node.burst) {
+              const d = Math.hypot(this.x - node.x, this.y - node.y);
+              if (d < node.radius + this.radius + 8) {
+                this.latchedNode = node;
+                audio.playLatch();
+                state.combo++;
+                if (state.combo > state.maxCombo) state.maxCombo = state.combo;
+
+                spawnComboRing(node.x, node.y, state.combo > 5 ? '#FF3B30' : '#8E44AD');
+                createCytoplasmParticles(this.x, this.y, '#8E44AD', 20 + state.combo * 2, 7);
+                triggerScreenShake(4 + Math.min(state.combo, 6));
+                spawnFloatingText(node.x, node.y - 35, `COMBO x${state.combo}!`, state.combo > 5 ? '#FF3B30' : '#8E44AD', 1.25);
+
+                const comboEl = document.getElementById('comboText');
+                if (comboEl) {
+                  comboEl.innerText = `x${state.combo}`;
+                  comboEl.classList.add('combo-pulse');
+                  setTimeout(() => comboEl.classList.remove('combo-pulse'), 250);
+                }
+              }
+            }
+          });
+        }
+
+        this.trail.push({ x: this.x, y: this.y });
+        if (this.trail.length > 16) this.trail.shift();
+      }
+
+      draw() {
+        if (this.trail.length > 1) {
+          ctx.beginPath();
+          ctx.moveTo(this.trail[0].x, this.trail[0].y);
+          for (let i = 1; i < this.trail.length; i++) {
+            ctx.lineTo(this.trail[i].x, this.trail[i].y);
+          }
+          ctx.strokeStyle = state.combo > 5 ? '#FF3B30' : '#8E44AD';
+          ctx.lineWidth = 3 + Math.min(state.combo, 5);
+          ctx.setLineDash([2, 4]);
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
+
+        if (!state.isGameOver && (mouse.down || this.latchedNode)) {
+          const worldMouseX = mouse.x + camera.x;
+          const worldMouseY = mouse.y + camera.y;
+          const angle = Math.atan2(worldMouseY - this.y, worldMouseX - this.x);
+          ctx.save();
+          ctx.beginPath();
+          ctx.moveTo(this.x, this.y);
+          ctx.lineTo(this.x + Math.cos(angle) * 140, this.y + Math.sin(angle) * 140);
+          ctx.strokeStyle = '#FF3B30';
+          ctx.lineWidth = 2.5;
+          ctx.setLineDash([5, 5]);
+          ctx.stroke();
+          ctx.restore();
+        }
+
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.rotation);
+
+        const isFlashing = this.hitCooldown > 0 && Math.floor(this.hitCooldown / 4) % 2 === 0;
+
+        if (this.shieldTimer > 0) {
+          ctx.beginPath();
+          ctx.arc(0, 0, this.radius + 10, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(142, 68, 173, 0.25)';
+          ctx.fill();
+          ctx.strokeStyle = '#8E44AD';
+          ctx.lineWidth = 2.5;
+          ctx.setLineDash([4, 4]);
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
+
+        ctx.strokeStyle = isFlashing ? '#FFFFFF' : '#FF3B30';
+        ctx.lineWidth = 2.5;
+        for (let i = 0; i < this.spikes; i++) {
+          const a = (i / this.spikes) * Math.PI * 2;
+          const sx = Math.cos(a) * (this.radius + 6);
+          const sy = Math.sin(a) * (this.radius + 6);
+
+          ctx.beginPath();
+          ctx.moveTo(Math.cos(a) * this.radius, Math.sin(a) * this.radius);
+          ctx.lineTo(sx, sy);
+          ctx.stroke();
+
+          ctx.fillStyle = '#8E44AD';
+          ctx.beginPath();
+          ctx.arc(sx, sy, 3, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        ctx.beginPath();
+        ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = isFlashing ? '#FF3B30' : '#111111';
+        ctx.fill();
+        ctx.strokeStyle = '#FF3B30';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+
+        ctx.fillStyle = '#FF3B30';
+        ctx.beginPath();
+        ctx.arc(0, 0, 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
+      }
+    }
+
+    class HostCell {
+      constructor(x, y, type) {
+        this.x = x;
+        this.y = y;
+        this.type = type;
+        this.radius = 28;
+        this.angle = Math.random() * Math.PI * 2;
+        this.rotSpeed = (Math.random() - 0.5) * 0.02;
+        this.infection = 0;
+        this.burst = false;
+        this.wobblePhase = Math.random() * 10;
+      }
+
+      update(dt) {
+        if (this.burst) return;
+        this.angle += this.rotSpeed * dt;
+        this.wobblePhase += 0.05 * dt;
+
+        if (player.latchedNode === this) {
+          const overclockBonus = state.combo >= 8 ? 0.3 : 0;
+          const infectionBonus = Math.min(0.8, state.combo * 0.04 + overclockBonus);
+          this.infection += (0.85 + infectionBonus) * dt;
+
+          if (this.infection >= 1.0) {
+            this.triggerLysis();
+            player.latchedNode = null;
+            player.launch();
+          }
+        }
+      }
+
+      triggerLysis() {
+        if (this.burst) return;
+        this.burst = true;
+        this.infection = 1.0;
+        audio.playLysis();
+        triggerScreenShake(10 + state.combo * 1.5);
+
+        const earnedScore = 100 * (state.combo + 1);
+        state.score += earnedScore;
+        if (state.score > state.highScore) {
+          state.highScore = state.score;
+          localStorage.setItem('viral_vector_highscore', state.highScore);
+        }
+
+        if (gameMode === 'unlimited') {
+          state.lysisCount++;
+        } else if (gameMode === 'campaign' && state.boss && !state.boss.defeated) {
+          const distToBoss = Math.hypot(this.x - state.boss.x, this.y - state.boss.y);
+          if (distToBoss < 300) {
+            state.boss.takeDamage(1);
+            spawnFloatingText(state.boss.x, state.boss.y - 70, 'NEAR-BOSS CELL LYSIS! -0.5 BOSS HP!', '#FF3B30', 1.4);
+          }
+        }
+        updateHUD();
+
+        spawnComboRing(this.x, this.y, '#FF3B30');
+        createCytoplasmParticles(this.x, this.y, '#FF3B30', 30, 9);
+        createCytoplasmParticles(this.x, this.y, '#8E44AD', 20, 7);
+        spawnFloatingText(this.x, this.y - 20, `+1 LYSIS [COMBO x${state.combo}]!`, '#FF3B30', 1.3);
+
+        if (Math.random() < 0.10) {
+          player.shieldTimer = 2.5;
+          audio.playShield();
+          spawnFloatingText(this.x, this.y - 45, 'SHIELD ACQUIRED!', '#8E44AD', 1.4);
+          createCytoplasmParticles(this.x, this.y, '#8E44AD', 25, 8);
+        }
+
+        if (Math.random() < 0.05) {
+          state.hp = Math.min(state.maxHp, state.hp + 1);
+          audio.playOrb();
+          spawnFloatingText(this.x, this.y - 60, '+1 HEALTH RESTORED!', '#27AE60', 1.5);
+          updateHUD();
+        }
+
+        if (gameMode === 'unlimited' && Math.random() < 0.7) {
+          mutationOrbs.push(new MutationOrb(this.x + (Math.random() - 0.5) * 50, this.y + (Math.random() - 0.5) * 50));
+        }
+
+        sentinels.forEach((sentinel) => {
+          const d = Math.hypot(this.x - sentinel.x, this.y - sentinel.y);
+          if (d < 190) {
+            sentinel.destroy();
+          }
+        });
+      }
+
+      draw() {
+        if (this.burst) return;
+
+        ctx.save();
+        ctx.translate(this.x, this.y);
+
+        ctx.beginPath();
+        const vertices = 16;
+        for (let i = 0; i < vertices; i++) {
+          const a = (i / vertices) * Math.PI * 2;
+          const wobble = Math.sin(this.wobblePhase + i) * 3;
+          const r = this.radius + wobble;
+          const px = Math.cos(a) * r;
+          const py = Math.sin(a) * r;
+          if (i === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
+        ctx.closePath();
+
+        ctx.fillStyle = this.infection > 0 ? '#FF3B30' : '#FFFFFF';
+        ctx.strokeStyle = '#111111';
+        ctx.lineWidth = 3;
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(0, 0, 7, 0, Math.PI * 2);
+        ctx.fillStyle = '#111111';
+        ctx.fill();
+
+        for (let i = 0; i < this.type; i++) {
+          const a = this.angle + (i / this.type) * Math.PI * 2;
+          const rx = Math.cos(a) * (this.radius + 4);
+          const ry = Math.sin(a) * (this.radius + 4);
+
+          ctx.beginPath();
+          ctx.arc(rx, ry, 4, 0, Math.PI * 2);
+          ctx.fillStyle = '#8E44AD';
+          ctx.fill();
+          ctx.strokeStyle = '#111111';
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+        }
+
+        if (this.infection > 0) {
+          ctx.beginPath();
+          ctx.arc(0, 0, this.radius * this.infection, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(17, 17, 17, 0.85)';
+          ctx.fill();
+        }
+
+        ctx.restore();
+      }
+    }
+
+    class PhagocyteSentinel {
+      constructor(x, y, subType) {
+        this.x = x;
+        this.y = y;
+        this.subType = subType;
+        this.dead = false;
+        this.angle = 0;
+        this.stunTimer = 0;
+
+        if (subType === 'speedy') {
+          this.radius = 11;
+          this.baseSpeed = 4.4;
+          this.damage = 1;
+          this.color = '#FF3B30';
+        } else if (subType === 'tank') {
+          this.radius = 20;
+          this.baseSpeed = 2.6;
+          this.damage = 1;
+          this.color = '#8E44AD';
+        } else {
+          this.radius = 14;
+          this.baseSpeed = 3.4;
+          this.damage = 1;
+          this.color = '#111111';
+        }
+      }
+
+      update(dt) {
+        if (this.dead) return;
+
+        if (this.stunTimer > 0) {
+          this.stunTimer -= dt;
+          return;
+        }
+
+        const speedMultiplier = Math.min(1.8, 1.0 + state.combo * 0.05);
+        const currentSpeed = this.baseSpeed * speedMultiplier;
+
+        const dx = player.x - this.x;
+        const dy = player.y - this.y;
+        const dist = Math.hypot(dx, dy) || 1;
+
+        let vx = (dx / dist) * currentSpeed;
+        let vy = (dy / dist) * currentSpeed;
+
+        let sepX = 0;
+        let sepY = 0;
+        let neighborCount = 0;
+
+        sentinels.forEach(other => {
+          if (other !== this && !other.dead) {
+            const od = Math.hypot(this.x - other.x, this.y - other.y);
+            if (od < 120 && od > 0) {
+              const pushStrength = (120 - od) / 120;
+              sepX += ((this.x - other.x) / od) * pushStrength;
+              sepY += ((this.y - other.y) / od) * pushStrength;
+              neighborCount++;
+            }
+          }
+        });
+
+        if (neighborCount > 0) {
+          sepX /= neighborCount;
+          sepY /= neighborCount;
+          vx += sepX * 4.5;
+          vy += sepY * 4.5;
+        }
+
+        this.x += vx * dt;
+        this.y += vy * dt;
+        this.angle += 0.04 * dt;
+
+        const hitDist = Math.hypot(this.x - player.x, this.y - player.y);
+        if (hitDist < this.radius + player.radius) {
+          player.takeDamage(this.damage);
+          this.x -= vx * 4;
+          this.y -= vy * 4;
+        }
+      }
+
+      destroy() {
+        if (this.dead) return;
+        this.dead = true;
+        createCytoplasmParticles(this.x, this.y, this.color, 18, 6);
+        spawnFloatingText(this.x, this.y, `${this.subType.toUpperCase()} NEUTRALIZED!`, this.color);
+      }
+
+      draw() {
+        if (this.dead) return;
+
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.angle);
+
+        if (this.stunTimer > 0) {
+          ctx.strokeStyle = '#FF3B30';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(0, 0, this.radius + 6, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+
+        if (this.subType === 'speedy') {
+          ctx.beginPath();
+          ctx.moveTo(this.radius + 4, 0);
+          ctx.lineTo(-this.radius, -this.radius * 0.8);
+          ctx.lineTo(-this.radius * 0.5, 0);
+          ctx.lineTo(-this.radius, this.radius * 0.8);
+          ctx.closePath();
+          ctx.fillStyle = '#FF3B30';
+          ctx.strokeStyle = '#111111';
+          ctx.lineWidth = 2.5;
+          ctx.fill();
+          ctx.stroke();
+        } else if (this.subType === 'tank') {
+          ctx.beginPath();
+          for (let i = 0; i < 6; i++) {
+            const a = (i / 6) * Math.PI * 2;
+            const px = Math.cos(a) * this.radius;
+            const py = Math.sin(a) * this.radius;
+            if (i === 0) ctx.moveTo(px, py);
+            else ctx.lineTo(px, py);
+          }
+          ctx.closePath();
+          ctx.fillStyle = '#FFFFFF';
+          ctx.strokeStyle = '#8E44AD';
+          ctx.lineWidth = 4;
+          ctx.fill();
+          ctx.stroke();
+        } else {
+          ctx.strokeStyle = '#111111';
+          ctx.lineWidth = 3.5;
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          ctx.lineTo(0, this.radius);
+          ctx.moveTo(0, 0);
+          ctx.lineTo(-this.radius * 0.8, -this.radius * 0.8);
+          ctx.moveTo(0, 0);
+          ctx.lineTo(this.radius * 0.8, -this.radius * 0.8);
+          ctx.stroke();
+
+          ctx.fillStyle = '#8E44AD';
+          ctx.fillRect(-this.radius * 0.8 - 3, -this.radius * 0.8 - 3, 6, 6);
+          ctx.fillRect(this.radius * 0.8 - 3, -this.radius * 0.8 - 3, 6, 6);
+        }
+
+        ctx.restore();
+      }
+    }
+
+    class CytoplasmParticle {
+      constructor(x, y, color, speed) {
+        this.x = x;
+        this.y = y;
+        this.color = color;
+        const angle = Math.random() * Math.PI * 2;
+        const spd = Math.random() * speed + 1;
+        this.vx = Math.cos(angle) * spd;
+        this.vy = Math.sin(angle) * spd;
+        this.life = 1.0;
+        this.decay = Math.random() * 0.03 + 0.02;
+        this.size = Math.random() * 5 + 2;
+      }
+      update(dt) {
+        this.x += this.vx * dt;
+        this.y += this.vy * dt;
+        this.life -= this.decay * dt;
+      }
+      draw() {
+        if (this.life <= 0) return;
+        ctx.save();
+        ctx.globalAlpha = this.life;
+        ctx.fillStyle = this.color;
+        ctx.fillRect(this.x, this.y, this.size, this.size);
+        ctx.restore();
+      }
+    }
+
+    let player = new VirionPlayer();
+    let nodes = [];
+    let sentinels = [];
+    let mutationOrbs = [];
+    let sugarCrystals = [];
+    let bossProjectiles = [];
+    let particles = [];
+
+    function createCytoplasmParticles(x, y, color, count, speed) {
+      for (let i = 0; i < count; i++) {
+        particles.push(new CytoplasmParticle(x, y, color, speed));
+      }
+    }
+
+    function triggerScreenShake(intensity) {
+      state.screenShake = Math.min(10, intensity);
+    }
+
+    function initUnlimitedGame() {
+      gameMode = 'unlimited';
+      gameState = 'game';
+      WORLD_WIDTH = 3500;
+      WORLD_HEIGHT = 3500;
+
+      nodes = [];
+      sentinels = [];
+      mutationOrbs = [];
+      sugarCrystals = [];
+      bossProjectiles = [];
+      state.lysisCount = 0;
+      state.combo = 0;
+      state.maxCombo = 0;
+      state.hp = 3;
+      state.maxHp = 3;
+      state.isGameOver = false;
+      state.isPaused = false;
+      state.driftMode = false;
+      state.driftTimer = 0;
+      state.redTintAlpha = 0;
+      state.boss = null;
+
+      for (let i = 0; i < 30; i++) {
+        spawnNonOverlappingCell();
+      }
+
+      for (let i = 0; i < 14; i++) {
+        spawnRandomSentinel();
+      }
+
+      for (let i = 0; i < 5; i++) {
+        mutationOrbs.push(new MutationOrb(
+          100 + Math.random() * (WORLD_WIDTH - 200),
+          100 + Math.random() * (WORLD_HEIGHT - 200)
+        ));
+      }
+
+      player.reset(WORLD_WIDTH / 2, WORLD_HEIGHT / 2);
+      camera.x = player.x - width / 2;
+      camera.y = player.y - height / 2;
+      
+      document.getElementById('startMenu').classList.add('hidden');
+      document.getElementById('hudOverworld').classList.add('hidden');
+      document.getElementById('hudOverworld').classList.add('opacity-0');
+      document.getElementById('hudGame').classList.remove('hidden');
+      document.getElementById('hudGame').classList.remove('opacity-0');
+      updateHUD();
+    }
+
+    function startBossLevel(level) {
+      gameMode = 'campaign';
+      gameState = 'game';
+      WORLD_WIDTH = window.innerWidth;
+      WORLD_HEIGHT = window.innerHeight;
+
+      nodes = [];
+      sentinels = [];
+      mutationOrbs = [];
+      sugarCrystals = [];
+      bossProjectiles = [];
+      state.bossLevel = level;
+      state.antibioticsEaten = 0;
+      state.combo = 0;
+      state.maxCombo = 0;
+      state.hp = 3;
+      state.maxHp = 3;
+      state.isGameOver = false;
+      state.isPaused = false;
+      state.driftMode = false;
+      state.driftTimer = 0;
+      state.redTintAlpha = 0;
+
+      spawnFloatingText(WORLD_WIDTH / 2, WORLD_HEIGHT / 2 - 50, `LEVEL ${level}: BOSS BATTLE ENGAGED!`, '#FF3B30', 1.6);
+      audio.playBossRoar();
+
+      state.boss = new UniqueBoss(level, WORLD_WIDTH / 2, WORLD_HEIGHT / 2);
+
+      const margin = 120;
+      for (let i = 0; i < 3; i++) {
+        let rx, ry, distToBoss;
+        let attempts = 0;
+        do {
+          rx = margin + Math.random() * (WORLD_WIDTH - margin * 2);
+          ry = margin + Math.random() * (WORLD_HEIGHT - margin * 2);
+          distToBoss = state.boss ? Math.hypot(rx - state.boss.x, ry - state.boss.y) : 999;
+          attempts++;
+        } while (distToBoss < 200 && attempts < 20);
+        sugarCrystals.push(new SugarCrystal(rx, ry));
+      }
+
+      for (let i = 0; i < 3; i++) {
+        const rx = margin + Math.random() * (WORLD_WIDTH - margin * 2);
+        const ry = margin + Math.random() * (WORLD_HEIGHT - margin * 2);
+        nodes.push(new HostCell(rx, ry, 3));
+      }
+
+      sentinels.push(new PhagocyteSentinel(margin, WORLD_HEIGHT - margin, 'speedy'));
+      sentinels.push(new PhagocyteSentinel(WORLD_WIDTH - margin, WORLD_HEIGHT - margin, 'tank'));
+      if (level >= 3) {
+        sentinels.push(new PhagocyteSentinel(WORLD_WIDTH / 2, margin, 'hunter'));
+      }
+
+      // Spawn player safely away from the center boss (e.g., top-left corner) so we don't spawn on top of the boss!
+      player.reset(150, 150);
+      camera.x = 0;
+      camera.y = 0;
+
+      document.getElementById('startMenu').classList.add('hidden');
+      document.getElementById('hudOverworld').classList.add('hidden');
+      document.getElementById('hudOverworld').classList.add('opacity-0');
+      document.getElementById('hudGame').classList.remove('hidden');
+      document.getElementById('hudGame').classList.remove('opacity-0');
+      updateHUD();
+    }
+
+    function spawnNonOverlappingCell() {
+      const margin = 150;
+      let attempts = 0;
+      let nx, ny;
+      let valid = false;
+
+      while (attempts < 30 && !valid) {
+        nx = margin + Math.random() * (WORLD_WIDTH - margin * 2);
+        ny = margin + Math.random() * (WORLD_HEIGHT - margin * 2);
+        valid = true;
+
+        for (let cell of nodes) {
+          const d = Math.hypot(nx - cell.x, ny - cell.y);
+          if (d < 110) {
+            valid = false;
+            break;
+          }
+        }
+        attempts++;
+      }
+
+      const types = [3, 4, 6];
+      const type = types[Math.floor(Math.random() * types.length)];
+      nodes.push(new HostCell(nx, ny, type));
+    }
+
+    function spawnRandomSentinel() {
+      const margin = 100;
+      let sx, sy, dist;
+      let attempts = 0;
+      do {
+        sx = margin + Math.random() * (WORLD_WIDTH - margin * 2);
+        sy = margin + Math.random() * (WORLD_HEIGHT - margin * 2);
+        dist = Math.hypot(sx - player.x, sy - player.y);
+        attempts++;
+      } while (dist < 320 && attempts < 25);
+
+      const subTypes = ['speedy', 'tank', 'hunter'];
+      const subType = subTypes[Math.floor(Math.random() * subTypes.length)];
+      sentinels.push(new PhagocyteSentinel(sx, sy, subType));
+    }
+
+    function updateHUD() {
+      if (gameMode === 'unlimited') {
+        document.getElementById('hudTitle').innerText = '// MODE 2: UNLIMITED OUTBREAK';
+        document.getElementById('hudObjective').innerText = `TOTAL LYSIS: ${state.lysisCount}`;
+        document.getElementById('scoreText').innerText = state.score;
+        document.getElementById('comboText').innerText = `x${state.combo}`;
+        document.getElementById('antibioticHudBox').classList.add('hidden');
+        document.getElementById('bossHpContainer').classList.add('hidden');
+      } else {
+        document.getElementById('hudTitle').innerText = `// CAMPAIGN BOSS LEVEL ${state.bossLevel}`;
+        document.getElementById('hudObjective').innerText = state.boss && !state.boss.defeated ? state.boss.theme.name : 'BOSS DEFEATED!';
+        document.getElementById('scoreText').innerText = state.score;
+        document.getElementById('comboText').innerText = `x${state.combo}`;
+        document.getElementById('antibioticText').innerText = `${state.antibioticsEaten} / 3`;
+        document.getElementById('antibioticHudBox').classList.remove('hidden');
+
+        document.getElementById('bossHpContainer').classList.remove('hidden');
+        if (state.boss) {
+          const displayHp = (state.boss.hp / 2).toFixed(state.boss.hp % 2 !== 0 ? 1 : 0);
+          document.getElementById('bossNameLabel').innerText = state.boss.theme.name;
+          document.getElementById('bossHpText').innerText = `${displayHp} / ${state.boss.maxHp / 2}`;
+          document.getElementById('bossHpBar').style.width = `${(state.boss.hp / state.boss.maxHp) * 100}%`;
+        }
+      }
+
+      document.getElementById('hpText').innerText = `${state.hp} / 3`;
+      document.getElementById('hpSegment1').style.opacity = state.hp >= 1 ? '1' : '0.2';
+      document.getElementById('hpSegment2').style.opacity = state.hp >= 2 ? '1' : '0.2';
+      document.getElementById('hpSegment3').style.opacity = state.hp >= 3 ? '1' : '0.2';
+    }
+
+    function triggerGameOver() {
+      if (state.isGameOver) return;
+      musicEngine.stop();
+      state.isGameOver = true;
+      audio.playLose();
+
+      state.driftMode = true;
+      state.driftTimer = 90;
+
+      document.getElementById('nextLevelBtn').classList.add('hidden');
+
+      document.getElementById('endTag').innerText = '[VIRION INTEGRITY DEPLETED]';
+      document.getElementById('endTitle').innerText = 'VIRION NEUTRALIZED';
+      document.getElementById('endScore').innerText = state.score;
+      document.getElementById('endHighScore').innerText = state.highScore;
+      document.getElementById('endStat1').innerText = 'DEFEAT';
+
+      if (gameMode === 'unlimited') {
+        document.getElementById('mapReturnBtn').innerText = 'RETURN TO MAIN MENU';
+      } else {
+        document.getElementById('mapReturnBtn').innerText = 'RETURN TO OVERWORLD MAP';
+      }
+
+      setTimeout(() => {
+        document.getElementById('endModal').classList.remove('hidden');
+      }, 1500);
+    }
+
+    function triggerBossVictory() {
+      if (state.isGameOver) return;
+      musicEngine.stop();
+      state.isGameOver = true;
+      audio.playWin();
+
+      state.driftMode = true;
+      state.driftTimer = 90;
+
+      // Unlock next boss level sequentially if we beat our highest unlocked boss
+      if (state.bossLevel >= state.highestUnlockedBoss && state.bossLevel < 5) {
+        state.highestUnlockedBoss = state.bossLevel + 1;
+        localStorage.setItem('viral_vector_unlocked_boss', state.highestUnlockedBoss);
+      }
+      if (state.bossLevel === 5) {
+        localStorage.setItem('viral_vector_campaign_completed', 'true');
+      }
+
+      document.getElementById('endTag').innerText = '[BOSS DEFEATED SUCCESSFUL]';
+      document.getElementById('endTitle').innerText = `LEVEL ${state.bossLevel} CLEARED!`;
+      document.getElementById('endScore').innerText = state.score;
+      document.getElementById('endHighScore').innerText = state.highScore;
+      document.getElementById('endStat1').innerText = 'VICTORY';
+
+      const nextBtn = document.getElementById('nextLevelBtn');
+      if (state.bossLevel < 5) {
+        nextBtn.classList.remove('hidden');
+        nextBtn.innerText = `NEXT LEVEL [BOSS LEVEL ${state.bossLevel + 1}]`;
+      } else {
+        nextBtn.classList.add('hidden');
+      }
+
+      if (gameMode === 'unlimited') {
+        document.getElementById('mapReturnBtn').innerText = 'RETURN TO MAIN MENU';
+      } else {
+        document.getElementById('mapReturnBtn').innerText = 'RETURN TO OVERWORLD MAP';
+      }
+
+      setTimeout(() => {
+        document.getElementById('endModal').classList.remove('hidden');
+      }, 1500);
+    }
+
+    function restartGame() {
+      musicEngine.stop();
+      document.getElementById('endModal').classList.add('hidden');
+      document.getElementById('pauseMenu').classList.add('hidden');
+      musicEngine.start();
+      if (gameMode === 'unlimited') initUnlimitedGame();
+      else startBossLevel(state.bossLevel);
+    }
+
+    let lastTime = performance.now();
+
+    function animate(now) {
+      const dtRaw = (now - lastTime) / 1000;
+      lastTime = now;
+
+      if (gameState === 'game' && !state.isPaused && !state.isGameOver) {
+        state.globalTimer += dtRaw;
+        nodes = nodes.filter(n => !n.burst);
+        sentinels = sentinels.filter(s => !s.dead);
+        mutationOrbs = mutationOrbs.filter(o => !o.collected);
+        if (sugarCrystals) sugarCrystals = sugarCrystals.filter(c => !c.collected);
+
+        if (gameMode === 'unlimited') {
+          if (nodes.length < 35) spawnNonOverlappingCell();
+          if (sentinels.length < 10 && Math.random() < 0.05) spawnRandomSentinel();
+          if (mutationOrbs.length < 8 && Math.random() < 0.08) {
+            mutationOrbs.push(new MutationOrb(100 + Math.random() * (WORLD_WIDTH - 200), 100 + Math.random() * (WORLD_HEIGHT - 200)));
+          }
+        } else if (gameMode === 'campaign' && state.boss && !state.boss.defeated) {
+          if (nodes.length < 3 && Math.random() < 0.05) {
+            const margin = 100;
+            const rx = margin + Math.random() * (WORLD_WIDTH - margin * 2);
+            const ry = margin + Math.random() * (WORLD_HEIGHT - margin * 2);
+            nodes.push(new HostCell(rx, ry, 3));
+          }
+          if (sugarCrystals.length === 0) {
+            const margin = 120;
+            sugarCrystals.push(new SugarCrystal(margin, margin));
+            sugarCrystals.push(new SugarCrystal(WORLD_WIDTH - margin, margin));
+            sugarCrystals.push(new SugarCrystal(WORLD_WIDTH / 2, WORLD_HEIGHT - margin));
+            spawnFloatingText(WORLD_WIDTH / 2, WORLD_HEIGHT / 2 - 80, 'NEW ANTIBODY CRYSTALS SPAWNED!', '#3498DB');
+          }
+        }
+      }
+
+      if (state.isGameOver && state.driftMode) {
+        if (state.driftTimer > 0) {
+          state.driftTimer--;
+          state.redTintAlpha = Math.min(0.65, state.redTintAlpha + 0.015);
+        }
+      }
+
+      if (state.isGameOver) {
+        state.targetTimeScale = 0.0;
+      } else if (mouse.down || player.latchedNode) {
+        state.targetTimeScale = 0.12;
+      } else {
+        state.targetTimeScale = 1.0;
+      }
+
+      state.timeScale += (state.targetTimeScale - state.timeScale) * 0.2;
+      const dt = state.isPaused ? 0 : Math.min(dtRaw, 0.1) * state.timeScale;
+
+      if (gameState === 'game' && !state.isPaused) {
+        camera.update(player.x, player.y);
+      }
+
+      ctx.save();
+      if (state.screenShake > 0) {
+        ctx.translate((Math.random() - 0.5) * state.screenShake, (Math.random() - 0.5) * state.screenShake);
+        state.screenShake *= 0.88;
+        if (state.screenShake < 0.5) state.screenShake = 0;
+      }
+
+      ctx.fillStyle = '#F8F9FA';
+      ctx.fillRect(0, 0, width, height);
+
+      ctx.save();
+      ctx.translate(-camera.x, -camera.y);
+
+      ctx.strokeStyle = '#111111';
+      ctx.lineWidth = 6;
+      ctx.strokeRect(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
+
+      ctx.strokeStyle = 'rgba(17, 17, 17, 0.035)';
+      ctx.lineWidth = 1;
+      const step = 90;
+      const startX = Math.floor(camera.x / step) * step;
+      const endX = startX + width + step * 2;
+      const startY = Math.floor(camera.y / step) * step;
+      const endY = startY + height + step * 2;
+
+      for (let x = startX; x < endX; x += step) {
+        if (x >= 0 && x <= WORLD_WIDTH) {
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, WORLD_HEIGHT);
+          ctx.stroke();
+        }
+      }
+      for (let y = startY; y < endY; y += step) {
+        if (y >= 0 && y <= WORLD_HEIGHT) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(WORLD_WIDTH, y);
+          ctx.stroke();
+        }
+      }
+
+      comboRings.forEach((ring, idx) => {
+        ring.radius += (ring.maxRadius - ring.radius) * 0.15;
+        ring.life -= dt * 2.0;
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, ring.life);
+        ctx.strokeStyle = ring.color;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(ring.x, ring.y, ring.radius, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+        if (ring.life <= 0) comboRings.splice(idx, 1);
+      });
+
+      if (gameState === 'overworld') {
+        // Draw connections between overworld nodes
+        ctx.save();
+        ctx.strokeStyle = '#111111';
+        ctx.lineWidth = 3;
+        ctx.setLineDash([6, 6]);
+        for (let i = 0; i < overworldNodes.length - 1; i++) {
+          ctx.beginPath();
+          ctx.moveTo(overworldNodes[i].x, overworldNodes[i].y);
+          ctx.lineTo(overworldNodes[i+1].x, overworldNodes[i+1].y);
+          ctx.stroke();
+        }
+        ctx.beginPath();
+        ctx.moveTo(overworldNodes[overworldNodes.length - 1].x, overworldNodes[overworldNodes.length - 1].y);
+        ctx.lineTo(overworldNodes[0].x, overworldNodes[0].y);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.restore();
+
+        overworldNodes.forEach(node => {
+          ctx.save();
+          ctx.translate(node.x, node.y);
+
+          ctx.beginPath();
+          ctx.arc(0, 0, node.radius, 0, Math.PI * 2);
+          ctx.fillStyle = node.unlocked ? '#8E44AD' : '#BDC3C7';
+          ctx.strokeStyle = '#111111';
+          ctx.lineWidth = 3;
+          ctx.fill();
+          ctx.stroke();
+
+          ctx.fillStyle = '#FFFFFF';
+          ctx.font = 'bold 14px "JetBrains Mono", monospace';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(`L${node.level}`, 0, 0);
+
+          ctx.fillStyle = '#111111';
+          ctx.font = 'bold 11px "JetBrains Mono", monospace';
+          ctx.fillText(node.name, 0, node.radius + 16);
+
+          ctx.restore();
+        });
+
+        if (localStorage.getItem('viral_vector_campaign_completed') === 'true') {
+          ctx.save();
+          ctx.font = 'extrabold 36px "Space Grotesk", sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillStyle = '#FF3B30';
+          ctx.fillText('YOU FINISHED THE GAME!', WORLD_WIDTH / 2, WORLD_HEIGHT / 2 - 120);
+          ctx.font = '14px "JetBrains Mono", monospace';
+          ctx.fillStyle = '#111111';
+          ctx.fillText('HOST OVERRIDE COMPLETE. SYSTEM SUPREMACY ACHIEVED.', WORLD_WIDTH / 2, WORLD_HEIGHT / 2 - 80);
+          ctx.restore();
+        }
+
+        player.update(dt * 60);
+        player.draw();
+      } else if (gameState === 'game') {
+        mutationOrbs.forEach(orb => {
+          if (!state.isPaused) orb.update(dt * 60);
+          orb.draw();
+        });
+
+        if (sugarCrystals) {
+          sugarCrystals.forEach(crystal => {
+            if (!state.isPaused) crystal.update(dt * 60);
+            crystal.draw();
+          });
+        }
+
+        if (state.boss) {
+          if (!state.isPaused) state.boss.update(dt * 60);
+          state.boss.draw();
+        }
+
+        bossProjectiles = bossProjectiles.filter(p => p.life > 0);
+        bossProjectiles.forEach(p => {
+          if (!state.isPaused) p.update(dt * 60);
+          p.draw();
+        });
+
+        nodes.forEach(node => {
+          if (!state.isPaused) node.update(dt * 60);
+          node.draw();
+        });
+
+        sentinels.forEach(sentinel => {
+          if (!state.isPaused) sentinel.update(dt * 60);
+          sentinel.draw();
+        });
+
+        player.update(dt * 60);
+        player.draw();
+
+        particles.forEach((p, idx) => {
+          if (!state.isPaused) p.update(dt * 60);
+          p.draw();
+          if (p.life <= 0) particles.splice(idx, 1);
+        });
+
+        floatingTexts.forEach((ft, idx) => {
+          if (!state.isPaused) {
+            ft.y += ft.vy;
+            ft.life -= dt * 1.5;
+          }
+          ctx.save();
+          ctx.globalAlpha = Math.max(0, ft.life);
+          ctx.fillStyle = ft.color;
+          ctx.font = 'bold 13px "JetBrains Mono", monospace';
+          ctx.fillText(ft.text, ft.x, ft.y);
+          ctx.restore();
+          if (ft.life <= 0) floatingTexts.splice(idx, 1);
+        });
+      }
+
+      ctx.restore();
+
+      if (state.redTintAlpha > 0) {
+        ctx.save();
+        ctx.fillStyle = `rgba(255, 59, 48, ${state.redTintAlpha})`;
+        ctx.fillRect(0, 0, width, height);
+        ctx.restore();
+      }
+
+      ctx.restore();
+      requestAnimationFrame(animate);
+    }
+
+    document.getElementById('mode1Btn').addEventListener('click', () => {
+      audio.init();
+      initOverworldMap();
+      musicEngine.init(audio.ctx);
+      musicEngine.start();
+    });
+
+    document.getElementById('mode2Btn').addEventListener('click', () => {
+      audio.init();
+      initUnlimitedGame();
+      musicEngine.init(audio.ctx);
+      musicEngine.start();
+    });
+
+    document.getElementById('backToMenuBtn').addEventListener('click', () => {
+      musicEngine.stop();
+      gameState = 'menu';
+      document.getElementById('hudOverworld').classList.add('opacity-0');
+      document.getElementById('hudOverworld').classList.add('hidden');
+      document.getElementById('startMenu').classList.remove('hidden');
+      document.getElementById('menuHighScore').innerText = state.highScore;
+    });
+
+    document.getElementById('resumeBtn').addEventListener('click', () => {
+      togglePause();
+    });
+
+    document.getElementById('pauseMenuBtn').addEventListener('click', () => {
+      musicEngine.stop();
+      state.redTintAlpha = 0;
+      document.getElementById('pauseMenu').classList.add('hidden');
+      document.getElementById('hudGame').classList.add('opacity-0');
+      document.getElementById('hudGame').classList.add('hidden');
+      document.getElementById('hudOverworld').classList.add('opacity-0');
+      document.getElementById('hudOverworld').classList.add('hidden');
+      document.getElementById('startMenu').classList.remove('hidden');
+      gameState = 'menu';
+      state.isPaused = false;
+    });
+
+    document.getElementById('testToolsBtn').addEventListener('click', () => {
+      document.getElementById('testToolsModal').classList.remove('hidden');
+    });
+
+    document.getElementById('closeTestToolsBtn').addEventListener('click', () => {
+      document.getElementById('testToolsModal').classList.add('hidden');
+    });
+
+    document.getElementById('applyTestToolsBtn').addEventListener('click', () => {
+      document.getElementById('testToolsModal').classList.add('hidden');
+    });
+
+    document.getElementById('godToggleBtn').addEventListener('click', () => {
+      state.godMode = !state.godMode;
+      document.getElementById('godStatus').innerText = state.godMode ? 'ON' : 'OFF';
+      document.getElementById('godStatus').className = state.godMode ? 'text-[#FF3B30] font-bold' : 'text-[#111111]/40';
+      document.getElementById('juryTag').classList.toggle('hidden', !state.godMode);
+    });
+
+    document.getElementById('unlockAllBtn').addEventListener('click', () => {
+      state.highestUnlockedBoss = 5;
+      localStorage.setItem('viral_vector_unlocked_boss', '5');
+      document.getElementById('unlockStatus').innerText = 'UNLOCKED ALL 5!';
+      if (gameState === 'overworld') initOverworldMap();
+    });
+
+
+
+    document.getElementById('nextLevelBtn').addEventListener('click', () => {
+      musicEngine.stop();
+      document.getElementById('endModal').classList.add('hidden');
+      document.getElementById('pauseMenu').classList.add('hidden');
+      musicEngine.start();
+      startBossLevel(state.bossLevel + 1);
+    });
+
+    document.getElementById('restartBtn').addEventListener('click', () => {
+      restartGame();
+    });
+
+    document.getElementById('mapReturnBtn').addEventListener('click', () => {
+      musicEngine.stop();
+      state.redTintAlpha = 0;
+      document.getElementById('endModal').classList.add('hidden');
+      document.getElementById('hudGame').classList.add('opacity-0');
+      document.getElementById('hudGame').classList.add('hidden');
+      if (gameMode === 'unlimited') {
+        gameState = 'menu';
+        document.getElementById('startMenu').classList.remove('hidden');
+        document.getElementById('menuHighScore').innerText = state.highScore;
+      } else {
+        initOverworldMap();
+        musicEngine.start();
+      }
+    });
+
+    window.addEventListener('click', () => {
+      audio.init();
+      if (!musicEngine.isPlaying && gameState === 'menu') {
+        musicEngine.init(audio.ctx);
+        musicEngine.start();
+      }
+    }, { once: true });
+
+    document.getElementById('menuHighScore').innerText = state.highScore;
+
+    document.getElementById('resetGameBtn').addEventListener('click', () => {
+      document.getElementById('resetModal').classList.remove('hidden');
+    });
+
+    document.getElementById('cancelResetBtn').addEventListener('click', () => {
+      document.getElementById('resetModal').classList.add('hidden');
+    });
+
+    document.getElementById('confirmResetBtn').addEventListener('click', () => {
+      localStorage.removeItem('viral_vector_highscore');
+      localStorage.removeItem('viral_vector_unlocked_boss');
+      localStorage.removeItem('viral_vector_campaign_completed');
+      state.highScore = 0;
+      state.highestUnlockedBoss = 1;
+      document.getElementById('menuHighScore').innerText = '0';
+      document.getElementById('resetModal').classList.add('hidden');
+      spawnFloatingText(window.innerWidth / 2, window.innerHeight / 2, 'GAME PROGRESS RESET SUCCESSFUL!', '#FF3B30', 1.4);
+    });
+
+    requestAnimationFrame(animate);
+  </script>
+</body>
+</html>
